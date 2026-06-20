@@ -1,0 +1,11 @@
+node_modules/
+.env
+*.log
+data/
+!data/.gitkeep
+auth_info/
+!auth_info/.gitkeep
+
+# Tesseract training data (auto-installed)
+eng.traineddata
+*.traineddata
