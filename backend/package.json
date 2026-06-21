@@ -15,7 +15,7 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
-    "node-sqlite3-wasm": "^0.8.11",
+    "mysql2": "^3.11.3",
     "nodemailer": "^9.0.1",
     "playwright": "^1.44.0",
     "qrcode": "^1.5.3",

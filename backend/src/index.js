@@ -17,7 +17,7 @@ app.use('/api/jobs',      require('./routes/runs'));
 app.use('/api/jobs',      require('./routes/jobItems'));
 app.use('/api/whatsapp',  require('./routes/whatsapp'));
 app.use('/api/preview',   require('./routes/preview'));
-app.use('/api/health',     require('./routes/health'));
+app.use('/api/health',    require('./routes/health'));
 
 app.use((err, req, res, _next) => {
   console.error(err);
@@ -25,14 +25,26 @@ app.use((err, req, res, _next) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
 
-  // Start cron scheduler for all active jobs
-  const { initScheduler } = require('./scheduler');
-  initScheduler();
+async function start() {
+  // Init MySQL schema (create tables if not exist)
+  const { initSchema } = require('./db/database');
+  await initSchema();
 
-  // Auto-connect WhatsApp (uses saved session if available)
-  const { connectWhatsApp } = require('./services/whatsapp');
-  connectWhatsApp().catch(err => console.error('[WhatsApp] Startup connect failed:', err.message));
+  app.listen(PORT, () => {
+    console.log(`Backend running on http://localhost:${PORT}`);
+
+    // Start cron scheduler
+    const { initScheduler } = require('./scheduler');
+    initScheduler().catch(err => console.error('[Scheduler] Init failed:', err.message));
+
+    // Auto-connect WhatsApp
+    const { connectWhatsApp } = require('./services/whatsapp');
+    connectWhatsApp().catch(err => console.error('[WhatsApp] Startup connect failed:', err.message));
+  });
+}
+
+start().catch(err => {
+  console.error('[Startup] Fatal error:', err.message);
+  process.exit(1);
 });

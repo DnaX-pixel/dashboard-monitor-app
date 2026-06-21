@@ -1,19 +1,18 @@
 const cron = require('node-cron');
 const { CronExpressionParser } = require('cron-parser');
-const db   = require('../db/database');
-const { runJob } = require('../services/runner');
+const { queryAll } = require('../db/database');
+const { runJob }   = require('../services/runner');
 
-// jobId (number) → ScheduledTask
+// jobId (number) → { task, cron }
 const tasks = new Map();
 
 function scheduleJob(job) {
-  // Remove existing task first (handles reschedule + pause)
   if (tasks.has(job.job_id)) {
-    tasks.get(job.job_id).stop();
+    tasks.get(job.job_id).task.stop();
     tasks.delete(job.job_id);
   }
 
-  if (job.status !== 'active') return; // paused → leave unscheduled
+  if (job.status !== 'active') return;
 
   if (!cron.validate(job.schedule_cron)) {
     console.warn(`[Scheduler] Invalid cron "${job.schedule_cron}" for job ${job.job_id} — skipping`);
@@ -30,13 +29,13 @@ function scheduleJob(job) {
     }
   });
 
-  tasks.set(job.job_id, task);
+  tasks.set(job.job_id, { task, cron: job.schedule_cron });
   console.log(`[Scheduler] Scheduled job ${job.job_id} (${job.job_name}) @ "${job.schedule_cron}"`);
 }
 
 function unscheduleJob(jobId) {
   if (tasks.has(jobId)) {
-    tasks.get(jobId).stop();
+    tasks.get(jobId).task.stop();
     tasks.delete(jobId);
     console.log(`[Scheduler] Unscheduled job ${jobId}`);
   }
@@ -56,16 +55,15 @@ function getNextRun(cronExpr) {
 }
 
 function getJobNextRuns() {
-  const jobs = db.prepare("SELECT job_id, schedule_cron, status FROM jobs WHERE status = 'active'").all([]);
   const result = {};
-  for (const job of jobs) {
-    result[job.job_id] = getNextRun(job.schedule_cron);
+  for (const [jobId, { cron: cronExpr }] of tasks) {
+    result[jobId] = getNextRun(cronExpr);
   }
   return result;
 }
 
-function initScheduler() {
-  const jobs = db.prepare("SELECT * FROM jobs WHERE status = 'active'").all([]);
+async function initScheduler() {
+  const jobs = await queryAll("SELECT * FROM jobs WHERE status = 'active'");
   for (const job of jobs) scheduleJob(job);
   console.log(`[Scheduler] Initialised — ${tasks.size} job(s) scheduled`);
 }

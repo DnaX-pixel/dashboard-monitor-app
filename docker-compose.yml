@@ -1,4 +1,45 @@
 services:
+  # ── MySQL Database ──
+  mysql:
+    image: mysql:8.4
+    container_name: monitor-mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dashboard_monitor
+      MYSQL_USER: monitor_user
+      MYSQL_PASSWORD: monitor_pass
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - monitor-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── phpMyAdmin ──
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: monitor-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8181:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - monitor-net
+
   # ── Backend API ──
   backend:
     build: ./backend
@@ -13,8 +54,17 @@ services:
       - backend/.env
     environment:
       - OLLAMA_URL=http://ollama:11434
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=dashboard_monitor
+      - DB_USER=monitor_user
+      - DB_PASS=monitor_pass
+      - DATA_DIR=/app/data
     depends_on:
-      - ollama
+      mysql:
+        condition: service_healthy
+      ollama:
+        condition: service_started
     networks:
       - monitor-net
 
@@ -51,6 +101,7 @@ services:
       - monitor-net
 
 volumes:
+  mysql-data:
   backend-data:
   backend-auth:
   ollama-models:

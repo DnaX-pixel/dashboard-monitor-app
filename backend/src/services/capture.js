@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const VIEWPORT = { width: 1280, height: 720 };
-const DATA_DIR = path.join(__dirname, '../../../data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../../../data');
 
 /**
  * Navigate to a URL, screenshot the cropped area (% coords → pixels),

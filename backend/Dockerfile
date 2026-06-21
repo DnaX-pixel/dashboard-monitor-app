@@ -1,4 +1,4 @@
-# Backend Dockerfile — Node.js + Playwright Chromium + SQLite
+# Backend Dockerfile — Node.js + Playwright Chromium + MySQL client
 FROM node:22-slim
 
 # Install Playwright Chromium dependencies
