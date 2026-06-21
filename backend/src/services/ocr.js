@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '../../../data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '../../../data');
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const VISION_MODEL = process.env.OLLAMA_VISION_MODEL || 'minicpm-v4.6';
 

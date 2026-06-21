@@ -8,7 +8,7 @@ const QRCode = require('qrcode');
 const path = require('path');
 const fs = require('fs');
 
-const AUTH_DIR = path.join(__dirname, '../../../auth_info');
+const AUTH_DIR = process.env.AUTH_DIR || path.join(__dirname, '../../../auth_info');
 
 // Minimal silent logger so Baileys doesn't spam stdout
 const silentLogger = {

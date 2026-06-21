@@ -62,6 +62,7 @@ services:
       - DB_USER=monitor_user
       - DB_PASS=monitor_pass
       - DATA_DIR=/app/data
+      - AUTH_DIR=/app/auth_info
     depends_on:
       mysql:
         condition: service_healthy
