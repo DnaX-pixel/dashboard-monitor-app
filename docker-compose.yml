@@ -42,7 +42,9 @@ services:
 
   # ── Backend API ──
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: monitor-backend
     restart: unless-stopped
     ports:
@@ -90,7 +92,9 @@ services:
 
   # ── Frontend (nginx) ──
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: monitor-frontend
     restart: unless-stopped
     ports:
