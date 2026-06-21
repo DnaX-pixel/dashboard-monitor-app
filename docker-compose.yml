@@ -1,0 +1,60 @@
+services:
+  # ── Backend API ──
+  backend:
+    build: ./backend
+    container_name: monitor-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - backend-data:/app/data
+      - backend-auth:/app/auth_info
+    env_file:
+      - backend/.env
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+    depends_on:
+      - ollama
+    networks:
+      - monitor-net
+
+  # ── Ollama OCR Engine ──
+  ollama:
+    image: ollama/ollama:latest
+    container_name: monitor-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    networks:
+      - monitor-net
+    # Uncomment for GPU support:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # ── Frontend (nginx) ──
+  frontend:
+    build: ./frontend
+    container_name: monitor-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - monitor-net
+
+volumes:
+  backend-data:
+  backend-auth:
+  ollama-models:
+
+networks:
+  monitor-net:
+    driver: bridge

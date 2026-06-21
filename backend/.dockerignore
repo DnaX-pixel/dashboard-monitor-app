@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+data
+auth_info
+dist
+*.log
+*.err
+eng.traineddata

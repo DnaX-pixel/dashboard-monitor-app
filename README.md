@@ -57,7 +57,59 @@
 
 ---
 
-## 🚀 Quick Start
+## 🐳 Docker Deployment (Recommended)
+
+The easiest way to run the entire app — backend, frontend, and Ollama OCR in containers.
+
+### Prerequisites
+- Docker + Docker Compose installed
+
+### 1. Configure environment
+```bash
+cp backend/.env.docker backend/.env
+# Edit backend/.env with your SMTP credentials and JWT secret
+```
+
+### 2. Build and start all services
+```bash
+docker compose up -d --build
+```
+
+### 3. Pull Ollama model (first time only)
+```bash
+docker exec monitor-ollama ollama pull minicpm-v4.6
+```
+
+### 4. Access the app
+- **Frontend**: http://localhost
+- **Backend API**: http://localhost:3001
+- **Ollama**: http://localhost:11434
+
+### Docker commands
+```bash
+# View logs
+docker compose logs -f
+
+# Stop all
+docker compose down
+
+# Rebuild after code changes
+docker compose up -d --build
+
+# View running containers
+docker compose ps
+```
+
+### Services in docker-compose.yml
+| Service | Port | Description |
+|---------|------|-------------|
+| `frontend` | 80 | Nginx serving React build + API proxy |
+| `backend` | 3001 | Express API + Playwright + scheduler |
+| `ollama` | 11434 | Vision LLM for OCR |
+
+---
+
+## 🚀 Manual Quick Start (without Docker)
 
 Pastikan awak ada:
 - Node.js v24+
