@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve screenshots for frontend thumbnails
-app.use('/static', express.static(path.join(__dirname, '../../data')));
+app.use('/static', express.static(process.env.DATA_DIR || path.join(__dirname, '../../data')));
 
 app.use('/api/auth',      require('./routes/auth'));
 app.use('/api/jobs',      require('./routes/jobs'));
