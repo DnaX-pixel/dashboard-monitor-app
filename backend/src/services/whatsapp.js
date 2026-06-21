@@ -113,4 +113,19 @@ function getWhatsAppState() {
   return { status: connectionStatus, qr: currentQRDataURL };
 }
 
-module.exports = { connectWhatsApp, sendWhatsApp, getWhatsAppState };
+async function disconnectWhatsApp() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  if (sock) {
+    try { await sock.logout(); } catch (e) { /* may already be closed */ }
+    try { await sock.end(new Error('manual disconnect')); } catch (e) { /* noop */ }
+    sock = null;
+  }
+  connectionStatus = 'disconnected';
+  currentQRDataURL = null;
+  console.log('[WhatsApp] Disconnected (manual)');
+}
+
+module.exports = { connectWhatsApp, disconnectWhatsApp, sendWhatsApp, getWhatsAppState };

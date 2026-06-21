@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 export default function CompareView() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function CompareView() {
 
   return (
     <div className="animate-in">
-      <Link to="/" className="back-link">← Back to Jobs</Link>
+      <Link to="/" className="back-link"><Icon name="arrowLeft" size={14} /> Back to Jobs</Link>
       <div className="page-header">
         <div>
           <h1>Compare: {job.job_name}</h1>
@@ -53,7 +54,7 @@ export default function CompareView() {
             <select value={selected.a || ''} onChange={e => setSelected(s => ({ ...s, a: +e.target.value }))}>
               {withShots.map(h => (
                 <option key={h.history_id} value={h.history_id}>
-                  {h.run_at} {h.changed_flag ? '⚠ Changed' : '○ Same'}
+                  {h.run_at} {h.changed_flag ? <><Icon name="alert" size={12} /> Changed</> : <><Icon name="circle" size={12} /> Same</>}
                 </option>
               ))}
             </select>
@@ -63,7 +64,7 @@ export default function CompareView() {
             <select value={selected.b || ''} onChange={e => setSelected(s => ({ ...s, b: +e.target.value }))}>
               {withShots.map(h => (
                 <option key={h.history_id} value={h.history_id}>
-                  {h.run_at} {h.changed_flag ? '⚠ Changed' : '○ Same'}
+                  {h.run_at} {h.changed_flag ? <><Icon name="alert" size={12} /> Changed</> : <><Icon name="circle" size={12} /> Same</>}
                 </option>
               ))}
             </select>

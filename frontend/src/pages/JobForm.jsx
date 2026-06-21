@@ -4,6 +4,7 @@ import { api } from '../api';
 import CropSelector   from '../components/CropSelector';
 import CroppedPreview  from '../components/CroppedPreview';
 import SchedulePicker from '../components/SchedulePicker';
+import Icon from '../components/Icon';
 
 const DEFAULT = {
   job_name: '', target_url: '',
@@ -214,12 +215,12 @@ export default function JobForm() {
 
   return (
     <div className="form-page animate-in">
-      <Link to="/" className="back-link">← Back to Jobs</Link>
+      <Link to="/" className="back-link"><Icon name="arrowLeft" size={14} /> Back to Jobs</Link>
       <div className="page-header">
         <h1>{isEdit ? 'Edit Job' : 'New Monitoring Job'}</h1>
       </div>
 
-      {error && <div className="error-msg">⚠ {error}</div>}
+      {error && <div className="error-msg"><Icon name="alert" size={16} /> {error}</div>}
 
       <div className="form-split">
         {/* LEFT COLUMN */}
@@ -265,7 +266,7 @@ export default function JobForm() {
                   disabled={previewing || !form.target_url}
                   style={{ marginTop: 10, padding: '12px' }}
                 >
-                  {previewing ? 'Capturing Screenshot…' : '🔍 Capture Screenshot'}
+                  {previewing ? 'Capturing Screenshot…' : <><Icon name="capture" size={16} /> Capture Screenshot</>}
                 </button>
               )}
             </div>
@@ -382,7 +383,7 @@ export default function JobForm() {
             items.length === 0 ? (
               <div className="card preview-card">
                 <div className="preview-header">
-                  <label>📋 Crop per URL</label>
+                  <label><Icon name="crop" size={16} /> Crop per URL</label>
                 </div>
                 <div className="preview-body">
                   <div className="preview-spinner" style={{ height: 300 }}>Add URLs in the Multi-URL section to configure crop areas</div>
@@ -407,13 +408,13 @@ export default function JobForm() {
                       </div>
                       <div className="card preview-card">
                         <div className="preview-header">
-                          <label>📋 Crop Area</label>
+                          <label><Icon name="crop" size={16} /> Crop Area</label>
                           <button
                             className="btn btn-sm btn-primary"
                             onClick={() => loadItemPreview(it)}
                             disabled={isPreviewing || !it.target_url}
                           >
-                            {isPreviewing ? 'Loading…' : '🔍 Preview'}
+                            {isPreviewing ? 'Loading…' : <><Icon name="search" size={14} /> Preview</>}
                           </button>
                         </div>
                         <div className="preview-body">
@@ -449,7 +450,7 @@ export default function JobForm() {
             <>
               <div className="card preview-card">
                 <div className="preview-header">
-                  <label>📋 Crop Area Selection</label>
+                  <label><Icon name="crop" size={16} /> Crop Area Selection</label>
                   <span style={{ fontSize: 12, color: 'var(--gray-500)' }}>Drag a box to select region</span>
                 </div>
                 <div className="preview-body">

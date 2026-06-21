@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const db = require('../db/database');
 const requireAuth = require('../middleware/auth');
-const { connectWhatsApp, getWhatsAppState } = require('../services/whatsapp');
+const { connectWhatsApp, disconnectWhatsApp, getWhatsAppState } = require('../services/whatsapp');
 
 router.use(requireAuth);
 
@@ -27,6 +27,16 @@ router.get('/qr', requireAdmin, (req, res) => {
 router.post('/connect', requireAdmin, async (req, res) => {
   try {
     await connectWhatsApp();
+    res.json({ ok: true, status: getWhatsAppState().status });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin only: manually disconnect WhatsApp
+router.post('/disconnect', requireAdmin, async (req, res) => {
+  try {
+    await disconnectWhatsApp();
     res.json({ ok: true, status: getWhatsAppState().status });
   } catch (err) {
     res.status(500).json({ error: err.message });

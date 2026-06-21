@@ -1,18 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 const STATUS_META = {
-  loading:      { label: 'Checking…',          color: '#94a3b8', icon: '⟳' },
-  connecting:   { label: 'Connecting…',         color: '#f59e0b', icon: '⟳' },
-  awaiting_qr:  { label: 'Waiting for QR Scan', color: '#f59e0b', icon: '⏳' },
-  connected:    { label: 'Connected',            color: '#22c55e', icon: '✓' },
-  disconnected: { label: 'Disconnected',         color: '#ef4444', icon: '✕' },
-  error:        { label: 'Error',                color: '#ef4444', icon: '⚠' },
+  loading:      { label: 'Checking…',          color: '#94a3b8', icon: 'refresh' },
+  connecting:   { label: 'Connecting…',         color: '#f59e0b', icon: 'refresh' },
+  awaiting_qr:  { label: 'Waiting for QR Scan', color: '#f59e0b', icon: 'clock' },
+  connected:    { label: 'Connected',            color: '#22c55e', icon: 'check' },
+  disconnected: { label: 'Disconnected',         color: '#ef4444', icon: 'x' },
+  error:        { label: 'Error',                color: '#ef4444', icon: 'alert' },
 };
 
 export default function WhatsApp() {
   const [state,   setState]   = useState({ status: 'loading', qr: null });
   const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
   const intervalRef = useRef(null);
 
   async function poll() {
@@ -46,6 +48,13 @@ export default function WhatsApp() {
     finally { setConnecting(false); }
   }
 
+  async function disconnect() {
+    setDisconnecting(true);
+    try { await api.post('/api/whatsapp/disconnect'); await poll(); }
+    catch (err) { alert(err.message); }
+    finally { setDisconnecting(false); }
+  }
+
   const meta = STATUS_META[state.status] || STATUS_META.error;
 
   return (
@@ -55,11 +64,16 @@ export default function WhatsApp() {
       <div className="card wa-card">
         <div className="wa-status">
           <span className={`status-dot ${state.status}`} style={{ background: meta.color, color: meta.color }} />
-          <span className="status-label">{meta.icon} {meta.label}</span>
+          <span className="status-label"><Icon name={meta.icon} size={18} /> {meta.label}</span>
         </div>
 
         {state.status === 'connected' && (
-          <p className="wa-ok">✓ WhatsApp is connected. Notifications will be delivered automatically.</p>
+          <>
+            <p className="wa-ok"><Icon name="check" size={16} /> WhatsApp is connected. Notifications will be delivered automatically.</p>
+            <button className="btn btn-danger" onClick={disconnect} disabled={disconnecting} style={{ marginTop: 12 }}>
+              {disconnecting ? 'Disconnecting…' : <><Icon name="power" size={16} /> Disconnect</>}
+            </button>
+          </>
         )}
 
         {state.status === 'awaiting_qr' && state.qr && (
@@ -87,7 +101,7 @@ export default function WhatsApp() {
               WhatsApp is not connected. Click Reconnect to start the pairing process.
             </p>
             <button className="btn btn-primary" onClick={reconnect} disabled={connecting}>
-              {connecting ? 'Connecting…' : 'Reconnect'}
+              {connecting ? 'Connecting…' : <><Icon name="refresh" size={16} /> Reconnect</>}
             </button>
           </div>
         )}

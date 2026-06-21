@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 export default function JobHistory() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export default function JobHistory() {
 
   return (
     <div className="animate-in">
-      <Link to="/" className="back-link">← Back to Jobs</Link>
+      <Link to="/" className="back-link"><Icon name="arrowLeft" size={14} /> Back to Jobs</Link>
       <div className="page-header">
         <div>
           <h1>History: {job.job_name}</h1>
@@ -37,15 +38,18 @@ export default function JobHistory() {
       {history.length > 0 && (
         <div className="stats-row">
           <div className="stat-card">
+            <div className="stat-icon-wrap" style={{ background: 'rgba(99,102,241,.1)', color: '#818cf8' }}><Icon name="history" size={20} /></div>
             <div className="stat-value">{history.length}</div>
             <div className="stat-label">Total Runs</div>
           </div>
           <div className="stat-card">
+            <div className="stat-icon-wrap" style={{ background: 'rgba(245,158,11,.1)', color: '#fbbf24' }}><Icon name="alert" size={20} /></div>
             <div className="stat-value" style={{ color: '#fbbf24' }}>{changedCount}</div>
             <div className="stat-label">Changes Detected</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value" style={{ color: '#4ade80' }}>{sentCount}</div>
+            <div className="stat-icon-wrap" style={{ background: 'rgba(16,185,129,.1)', color: '#34d399' }}><Icon name="mail" size={20} /></div>
+            <div className="stat-value" style={{ color: '#34d399' }}>{sentCount}</div>
             <div className="stat-label">Notifications Sent</div>
           </div>
         </div>

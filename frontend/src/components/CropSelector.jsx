@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Icon from './Icon';
 
 const CW = 960;
 const CH = 540;
@@ -210,7 +211,7 @@ export default function CropSelector({ previewUrl, crop, onChange }) {
       <div className={`crop-canvas-wrap ${!previewUrl ? 'empty' : ''}`}>
         {previewUrl && (
           <button className="btn btn-sm fullscreen-btn" onClick={() => setFullscreen(true)} title="Crop in fullscreen">
-            ⛶ Fullscreen
+            <Icon name="fullscreen" size={14} /> Fullscreen
           </button>
         )}
         <canvas
@@ -234,10 +235,10 @@ export default function CropSelector({ previewUrl, crop, onChange }) {
       {fullscreen && createPortal(
         <div className="crop-fullscreen-overlay">
           <div className="crop-fullscreen-header">
-            <span className="crop-fullscreen-title">⛶ Fullscreen Crop Mode</span>
+            <span className="crop-fullscreen-title"><Icon name="fullscreen" size={14} /> Fullscreen Crop Mode</span>
             <div className="crop-fullscreen-actions">
               <span className="crop-fullscreen-hint">Drag to select crop area · click outside or Done to close</span>
-              <button className="btn btn-sm btn-primary" onClick={() => setFullscreen(false)}>Done ✓</button>
+              <button className="btn btn-sm btn-primary" onClick={() => setFullscreen(false)}><Icon name="check" size={14} /> Done</button>
             </div>
           </div>
           <div className="crop-fullscreen-canvas-wrap" onClick={(e) => e.target === e.currentTarget && setFullscreen(false)}>

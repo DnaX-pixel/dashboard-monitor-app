@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../api';
+import Icon from '../components/Icon';
 
 const STATUS_META = {
-  ok:      { color: '#22c55e', icon: '✓', label: 'OK' },
-  warning: { color: '#f59e0b', icon: '⚠', label: 'Warning' },
-  error:   { color: '#ef4444', icon: '✕', label: 'Error' },
+  ok:      { color: '#22c55e', icon: 'check', label: 'OK' },
+  warning: { color: '#f59e0b', icon: 'alert', label: 'Warning' },
+  error:   { color: '#ef4444', icon: 'x', label: 'Error' },
 };
 
 export default function HealthCheck() {
@@ -51,20 +52,21 @@ export default function HealthCheck() {
         {checks.map(([key, check]) => {
           const meta = STATUS_META[check.status] || STATUS_META.error;
           return (
-            <div key={key} className="card" style={{ marginBottom: 0, padding: '16px 20px', borderColor: meta.color + '25' }}>
+            <div key={key} className="card health-check-item" style={{ marginBottom: 0, padding: '16px 20px', borderColor: meta.color + '25', ['--hc-color']: meta.color }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: '50%',
                   background: meta.color + '15', border: `1.5px solid ${meta.color}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 16, color: meta.color, flexShrink: 0,
+                  boxShadow: meta.status === 'ok' ? `0 0 12px ${meta.color}40` : 'none',
                 }}>
-                  {meta.icon}
+                        <Icon name={meta.icon} size={16} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{check.label}</div>
                   {check.detail && (
-                    <div className="text-muted" style={{ fontSize: 12, marginTop: 2, fontFamily: 'SF Mono, Fira Code, monospace' }}>
+                    <div className="text-muted" style={{ fontSize: 12, marginTop: 2, fontFamily: 'var(--font-mono)' }}>
                       {check.detail}
                     </div>
                   )}

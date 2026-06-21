@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Icon from './Icon';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -94,13 +95,13 @@ export default function SchedulePicker({ value, onChange }) {
           className={s.type === 'interval' ? 'active' : ''}
           onClick={() => upd('type', 'interval')}
         >
-          ⏱ Interval
+          <Icon name="schedule" size={14} /> Interval
         </button>
         <button
           className={s.type === 'alarm' ? 'active' : ''}
           onClick={() => upd('type', 'alarm')}
         >
-          ⏰ Alarm
+          <Icon name="clock" size={14} /> Alarm
         </button>
       </div>
 
@@ -163,7 +164,7 @@ export default function SchedulePicker({ value, onChange }) {
 
       {/* Human readable + cron */}
       <div className="schedule-summary">
-        <span className="schedule-summary-label">📋</span>
+        <span className="schedule-summary-label"><Icon name="clipboard" size={16} /></span>
         <span className="schedule-summary-text">{cronToHuman(buildCron(s))}</span>
         <span className="cron-preview">{buildCron(s)}</span>
       </div>
