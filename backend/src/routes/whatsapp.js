@@ -1,17 +1,17 @@
 const router = require('express').Router();
-const db = require('../db/database');
+const { queryGet } = require('../db/database');
 const requireAuth = require('../middleware/auth');
 const { connectWhatsApp, disconnectWhatsApp, getWhatsAppState } = require('../services/whatsapp');
 
 router.use(requireAuth);
 
-function requireAdmin(req, res, next) {
-  const user = db.prepare('SELECT is_admin FROM users WHERE user_id = ?').get([req.user.user_id]);
+async function requireAdmin(req, res, next) {
+  const user = await queryGet('SELECT is_admin FROM users WHERE user_id = ?', [req.user.user_id]);
   if (!user || !user.is_admin) return res.status(403).json({ error: 'Admin only' });
   next();
 }
 
-// Any authenticated user can check status (frontend needs to know if WA is ready)
+// Any authenticated user can check status
 router.get('/status', (req, res) => {
   const { status } = getWhatsAppState();
   res.json({ status });
@@ -23,7 +23,7 @@ router.get('/qr', requireAdmin, (req, res) => {
   res.json({ status, qr });
 });
 
-// Admin only: manually trigger reconnect (e.g., after logout)
+// Admin only: manually trigger reconnect
 router.post('/connect', requireAdmin, async (req, res) => {
   try {
     await connectWhatsApp();
