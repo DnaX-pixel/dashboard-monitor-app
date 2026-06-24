@@ -23,6 +23,11 @@ async function getAuthTransporter(userId) {
 }
 
 function getBaseUrl() {
+  // Priority: explicit env var (set in docker-compose) > localhost
+  // Set APP_BASE_URL=http://72.61.149.40 in docker-compose for production VPS
+  if (process.env.APP_BASE_URL && process.env.APP_BASE_URL !== 'http://localhost') {
+    return process.env.APP_BASE_URL.replace(/\/$/, '');
+  }
   return process.env.APP_BASE_URL || 'http://localhost:3000';
 }
 
