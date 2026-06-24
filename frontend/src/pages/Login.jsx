@@ -23,8 +23,15 @@ export default function Login() {
       const body = mode === 'login'
         ? { email: form.email, password: form.password }
         : { name: form.name, email: form.email, password: form.password };
-      const { token, user } = await api.post(path, body);
-      login(token, user);
+      const res = await api.post(path, body);
+      login(res.token, res.user);
+      if (mode === 'register' && res.verificationSent) {
+        // Show success message before navigating
+        setError('');
+        alert('Account created! Check your email (from your configured SMTP) to verify. Redirecting to dashboard…');
+      } else if (mode === 'register' && !res.verificationSent) {
+        alert('Account created. Configure your SMTP at /email to enable email verification.');
+      }
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -85,12 +92,17 @@ export default function Login() {
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input type="password" required value={form.password} onChange={e => set('password', e.target.value)} placeholder="Enter your password" />
+              <input type="password" required value={form.password} onChange={e => set('password', e.target.value)} placeholder="Enter your password" minLength={8} />
             </div>
             {error && <div className="error-msg"><Icon name="alert" size={16} /> {error}</div>}
             <button type="submit" className="btn btn-primary btn-block" style={{ marginTop: 8, padding: '13px' }} disabled={loading}>
               {loading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account'}
             </button>
+            {mode === 'login' && (
+              <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13 }}>
+                <a href="/forgot-password" style={{ color: 'var(--primary)' }}>Forgot password?</a>
+              </div>
+            )}
           </form>
         </div>
       </div>

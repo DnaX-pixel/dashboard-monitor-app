@@ -17,12 +17,70 @@ async function initSchema() {
   try {
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS users (
-        user_id       INT AUTO_INCREMENT PRIMARY KEY,
-        name          VARCHAR(100)  NOT NULL,
-        email         VARCHAR(150)  NOT NULL UNIQUE,
-        password_hash VARCHAR(255)  NOT NULL,
-        is_admin      TINYINT(1)    NOT NULL DEFAULT 0,
-        created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
+        user_id          INT AUTO_INCREMENT PRIMARY KEY,
+        name             VARCHAR(100)  NOT NULL,
+        email            VARCHAR(150)  NOT NULL UNIQUE,
+        password_hash    VARCHAR(255)  NOT NULL,
+        is_admin         TINYINT(1)    NOT NULL DEFAULT 0,
+        email_verified   TINYINT(1)    NOT NULL DEFAULT 0,
+        failed_attempts  INT           NOT NULL DEFAULT 0,
+        locked_until     DATETIME      NULL,
+        last_login_at    DATETIME      NULL,
+        last_login_ip    VARCHAR(45)   NULL,
+        created_at       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Idempotent migrations for existing users table
+    const userCols = [
+      ['email_verified',  'TINYINT(1) NOT NULL DEFAULT 0'],
+      ['failed_attempts', 'INT NOT NULL DEFAULT 0'],
+      ['locked_until',    'DATETIME NULL'],
+      ['last_login_at',   'DATETIME NULL'],
+      ['last_login_ip',   'VARCHAR(45) NULL'],
+    ];
+    for (const [col, def] of userCols) {
+      try {
+        await conn.execute(`ALTER TABLE users ADD COLUMN ${col} ${def}`);
+        console.log(`[DB] Added users.${col}`);
+      } catch (e) {
+        if (e.code !== 'ER_DUP_FIELDNAME') throw e;
+      }
+    }
+
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS email_verifications (
+        token       CHAR(64) PRIMARY KEY,
+        user_id     INT          NOT NULL,
+        expires_at  DATETIME     NOT NULL,
+        used_at     DATETIME     NULL,
+        created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+      )
+    `);
+
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS password_resets (
+        token       CHAR(64) PRIMARY KEY,
+        user_id     INT          NOT NULL,
+        expires_at  DATETIME     NOT NULL,
+        used_at     DATETIME     NULL,
+        created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+      )
+    `);
+
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS login_history (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        user_id     INT          NULL,
+        email       VARCHAR(150) NOT NULL,
+        success     TINYINT(1)   NOT NULL,
+        ip          VARCHAR(45)  NULL,
+        user_agent  VARCHAR(500) NULL,
+        created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_user_created (user_id, created_at),
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
       )
     `);
 
@@ -121,19 +179,16 @@ async function initSchema() {
   }
 }
 
-// Helper: run a query and return all rows
 async function queryAll(sql, params = []) {
   const [rows] = await pool.execute(sql, params);
   return rows;
 }
 
-// Helper: run a query and return first row (or undefined)
 async function queryGet(sql, params = []) {
   const [rows] = await pool.execute(sql, params);
   return rows[0];
 }
 
-// Helper: run INSERT/UPDATE/DELETE and return { insertId, affectedRows }
 async function queryRun(sql, params = []) {
   const [result] = await pool.execute(sql, params);
   return { insertId: result.insertId, affectedRows: result.affectedRows };

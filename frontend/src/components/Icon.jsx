@@ -105,6 +105,25 @@ const ICONS = {
       <path d="M18 6L6 18M6 6l12 12" />
     </>
   ),
+  user: (
+    <>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </>
+  ),
+  key: (
+    <>
+      <circle cx="8" cy="15" r="4" />
+      <path d="M10.85 12.15L19 4" />
+      <path d="M18 5l3 3M15 8l3 3" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="4" y="11" width="16" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </>
+  ),
   alert: (
     <>
       <path d="M12 2L2 20h20L12 2z" />

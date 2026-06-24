@@ -11,6 +11,10 @@ import CompareView from './pages/CompareView';
 import WhatsApp    from './pages/WhatsApp';
 import EmailSettings from './pages/EmailSettings';
 import HealthCheck  from './pages/HealthCheck';
+import Profile     from './pages/Profile';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword  from './pages/ResetPassword';
+import VerifyEmail    from './pages/VerifyEmail';
 
 function PrivateRoute({ children }) {
   const { token } = useAuth();
@@ -23,6 +27,7 @@ const PAGE_TITLES = {
   '/whatsapp': 'WhatsApp Connection',
   '/email': 'Email Settings',
   '/health': 'System Health',
+  '/profile': 'Profile',
 };
 
 function getPageTitle(pathname) {
@@ -56,6 +61,9 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/" element={
             <PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>
           } />
@@ -79,6 +87,9 @@ export default function App() {
           } />
           <Route path="/health" element={
             <PrivateRoute><Layout><HealthCheck /></Layout></PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute><Layout><Profile /></Layout></PrivateRoute>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

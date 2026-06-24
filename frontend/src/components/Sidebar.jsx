@@ -68,6 +68,9 @@ export default function Sidebar({ open, onClose }) {
             <div className="user-name">{user?.email?.split('@')[0] || 'User'}</div>
             <div className="user-email">{user?.email}</div>
           </div>
+          <button className="btn btn-sm btn-ghost" onClick={() => navigate('/profile')} title="Profile" style={{ marginRight: 4 }}>
+            <Icon name="user" size={16} />
+          </button>
           <button className="btn btn-sm btn-ghost" onClick={() => { logout(); navigate('/login'); }} title="Logout">
             <Icon name="logout" size={16} />
           </button>
