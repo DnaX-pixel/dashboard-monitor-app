@@ -71,6 +71,19 @@ async function initSchema() {
     `);
 
     await conn.execute(`
+      CREATE TABLE IF NOT EXISTS whatsapp_sessions (
+        user_id      INT PRIMARY KEY,
+        status       ENUM('disconnected','awaiting_qr','connected') NOT NULL DEFAULT 'disconnected',
+        phone_number VARCHAR(20),
+        push_name    VARCHAR(100),
+        connected_at DATETIME,
+        last_error   TEXT,
+        updated_at   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+      )
+    `);
+
+    await conn.execute(`
       CREATE TABLE IF NOT EXISTS job_items (
         item_id     INT AUTO_INCREMENT PRIMARY KEY,
         job_id      INT          NOT NULL,

@@ -38,9 +38,8 @@ async function start() {
     const { initScheduler } = require('./scheduler');
     initScheduler().catch(err => console.error('[Scheduler] Init failed:', err.message));
 
-    // Auto-connect WhatsApp
-    const { connectWhatsApp } = require('./services/whatsapp');
-    connectWhatsApp().catch(err => console.error('[WhatsApp] Startup connect failed:', err.message));
+    // WhatsApp connections are now per-user (lazy connect on first use)
+    console.log('[WhatsApp] Multi-tenant mode — connections initialize on demand');
   });
 }
 

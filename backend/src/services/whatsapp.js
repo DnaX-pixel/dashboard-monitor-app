@@ -7,9 +7,9 @@ const {
 const QRCode = require('qrcode');
 const path = require('path');
 const fs = require('fs');
+const { queryGet, queryRun } = require('../db/database');
 
 const AUTH_DIR = process.env.AUTH_DIR || path.join(__dirname, '../../../auth_info');
-
 const silentLogger = {
   level: 'silent',
   trace: () => {}, debug: () => {}, info: () => {},
@@ -17,83 +17,190 @@ const silentLogger = {
   child: function () { return this; },
 };
 
-let sock = null;
-let connectionStatus = 'disconnected'; // 'disconnected' | 'connecting' | 'awaiting_qr' | 'connected'
-let currentQRDataURL = null;
-let reconnectTimer = null;
+// Per-user connection state
+// userId -> { sock, status, qr, reconnectTimer, authDir }
+const sessions = new Map();
 
-function clearAuthSession() {
-  // Delete saved session so we get a fresh QR (used when loggedOut or after manual disconnect)
+function getAuthDir(userId) {
+  const dir = path.join(AUTH_DIR, String(userId));
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  return dir;
+}
+
+async function persistStatus(userId, status, extras = {}) {
   try {
-    if (fs.existsSync(AUTH_DIR)) {
-      for (const f of fs.readdirSync(AUTH_DIR)) {
-        fs.rmSync(path.join(AUTH_DIR, f), { recursive: true, force: true });
-      }
-      console.log('[WhatsApp] Auth session cleared');
-    }
+    await queryRun(
+      `INSERT INTO whatsapp_sessions (user_id, status, phone_number, push_name, connected_at, last_error, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+       ON DUPLICATE KEY UPDATE
+         status = VALUES(status),
+         phone_number = VALUES(phone_number),
+         push_name = VALUES(push_name),
+         connected_at = VALUES(connected_at),
+         last_error = VALUES(last_error),
+         updated_at = CURRENT_TIMESTAMP`,
+      [
+        userId,
+        status,
+        extras.phone_number || null,
+        extras.push_name || null,
+        extras.connected_at || null,
+        extras.last_error || null,
+      ]
+    );
   } catch (e) {
-    console.warn('[WhatsApp] Failed to clear auth session:', e.message);
+    console.error(`[WhatsApp ${userId}] Failed to persist status:`, e.message);
   }
 }
 
-async function connectWhatsApp() {
-  if (connectionStatus === 'connected' || connectionStatus === 'connecting' || connectionStatus === 'awaiting_qr') {
-    console.log(`[WhatsApp] Already ${connectionStatus}, skipping connect attempt`);
-    return;
+function getOrCreateSession(userId) {
+  if (!sessions.has(userId)) {
+    sessions.set(userId, {
+      sock: null,
+      status: 'disconnected',
+      qr: null,
+      reconnectTimer: null,
+    });
   }
-  connectionStatus = 'connecting';
+  return sessions.get(userId);
+}
 
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+async function connectWhatsApp(userId) {
+  const session = getOrCreateSession(userId);
+  if (session.status === 'connected' || session.status === 'connecting' || session.status === 'awaiting_qr') {
+    return; // already active
+  }
+  session.status = 'connecting';
+  await persistStatus(userId, 'connecting');
+
+  const authDir = getAuthDir(userId);
+  const { state, saveCreds } = await useMultiFileAuthState(authDir);
   const { version } = await fetchLatestBaileysVersion();
 
-  sock = makeWASocket({
+  session.sock = makeWASocket({
     version,
     auth: state,
     logger: silentLogger,
     printQRInTerminal: false,
   });
 
-  sock.ev.on('connection.update', async (update) => {
+  session.sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
-      currentQRDataURL = await QRCode.toDataURL(qr);
-      connectionStatus = 'awaiting_qr';
-      console.log('[WhatsApp] QR ready — GET /api/whatsapp/qr to retrieve it');
+      session.qr = await QRCode.toDataURL(qr);
+      session.status = 'awaiting_qr';
+      await persistStatus(userId, 'awaiting_qr');
+      console.log(`[WhatsApp ${userId}] QR ready`);
     }
 
     if (connection === 'open') {
-      connectionStatus = 'connected';
-      currentQRDataURL = null;
-      console.log('[WhatsApp] Connected');
+      session.status = 'connected';
+      session.qr = null;
+      // Try to read phone number from creds
+      let phone = null, pushName = null;
+      try {
+        const creds = state.creds;
+        if (creds?.me) {
+          phone = creds.me.id ? String(creds.me.id).split(':')[0].split('@')[0] : null;
+          pushName = creds.me.name || null;
+        }
+      } catch (e) {}
+      await persistStatus(userId, 'connected', {
+        phone_number: phone,
+        push_name: pushName,
+        connected_at: new Date(),
+      });
+      console.log(`[WhatsApp ${userId}] Connected as ${pushName || phone || 'unknown'}`);
     }
 
     if (connection === 'close') {
-      currentQRDataURL = null;
+      session.qr = null;
       const code = lastDisconnect?.error?.output?.statusCode;
       const loggedOut = code === DisconnectReason.loggedOut;
 
-      if (sock) {
-        try { sock.end(undefined); } catch (e) {}
-        sock = null;
+      if (session.sock) {
+        try { session.sock.end(undefined); } catch (e) {}
+        session.sock = null;
       }
 
       if (loggedOut) {
-        // Session invalidated — clear and wait for manual reconnect
-        clearAuthSession();
-        connectionStatus = 'disconnected';
-        console.log('[WhatsApp] Logged out — clear session, awaiting QR rescan');
+        clearAuthSession(userId);
+        session.status = 'disconnected';
+        await persistStatus(userId, 'disconnected', { last_error: 'logged_out' });
+        console.log(`[WhatsApp ${userId}] Logged out — clear session, awaiting QR rescan`);
       } else {
-        // Transient disconnect — auto-reconnect after 5s
-        connectionStatus = 'disconnected';
-        console.log('[WhatsApp] Disconnected, reconnecting in 5s...');
-        clearTimeout(reconnectTimer);
-        reconnectTimer = setTimeout(connectWhatsApp, 5000);
+        session.status = 'disconnected';
+        await persistStatus(userId, 'disconnected', { last_error: `disconnect_code_${code}` });
+        console.log(`[WhatsApp ${userId}] Disconnected, reconnecting in 5s...`);
+        clearTimeout(session.reconnectTimer);
+        session.reconnectTimer = setTimeout(() => connectWhatsApp(userId), 5000);
       }
     }
   });
 
-  sock.ev.on('creds.update', saveCreds);
+  session.sock.ev.on('creds.update', saveCreds);
+}
+
+function clearAuthSession(userId) {
+  try {
+    const dir = getAuthDir(userId);
+    for (const f of fs.readdirSync(dir)) {
+      fs.rmSync(path.join(dir, f), { recursive: true, force: true });
+    }
+    console.log(`[WhatsApp ${userId}] Auth session cleared`);
+  } catch (e) {
+    console.warn(`[WhatsApp ${userId}] Failed to clear auth session:`, e.message);
+  }
+}
+
+async function disconnectWhatsApp(userId) {
+  const session = getOrCreateSession(userId);
+  if (session.reconnectTimer) {
+    clearTimeout(session.reconnectTimer);
+    session.reconnectTimer = null;
+  }
+  if (session.sock) {
+    try { await session.sock.logout(); } catch (e) {}
+    session.sock = null;
+  }
+  clearAuthSession(userId);
+  session.status = 'disconnected';
+  session.qr = null;
+  await persistStatus(userId, 'disconnected');
+  console.log(`[WhatsApp ${userId}] Disconnected (manual)`);
+
+  // Auto-reconnect to generate fresh QR
+  setTimeout(() => connectWhatsApp(userId).catch(e =>
+    console.error(`[WhatsApp ${userId}] Reconnect after disconnect failed:`, e.message)
+  ), 1000);
+}
+
+function getWhatsAppState(userId) {
+  const session = sessions.get(userId);
+  if (!session) return { status: 'disconnected', qr: null };
+  return { status: session.status, qr: session.qr };
+}
+
+async function sendWhatsApp(userId, jid, message, imagePaths) {
+  const session = sessions.get(userId);
+  if (!session || session.status !== 'connected' || !session.sock) {
+    throw new Error(`WhatsApp not connected for user ${userId} (status: ${session?.status || 'disconnected'})`);
+  }
+  const normalized = normalizeJid(jid);
+  const paths = imagePaths ? (Array.isArray(imagePaths) ? imagePaths : [imagePaths]) : [];
+  const validPaths = paths.filter(p => fs.existsSync(p));
+
+  if (validPaths.length === 0) {
+    await session.sock.sendMessage(normalized, { text: message });
+  } else if (validPaths.length === 1) {
+    await session.sock.sendMessage(normalized, { image: { url: validPaths[0] }, caption: message });
+  } else {
+    for (let i = 0; i < validPaths.length; i++) {
+      const caption = i === 0 ? message : '';
+      await session.sock.sendMessage(normalized, { image: { url: validPaths[i] }, caption });
+    }
+  }
 }
 
 function normalizeJid(value) {
@@ -108,49 +215,6 @@ function normalizeJid(value) {
     v = '60' + v;
   }
   return v + '@s.whatsapp.net';
-}
-
-async function sendWhatsApp(jid, message, imagePaths) {
-  if (connectionStatus !== 'connected' || !sock) {
-    throw new Error(`WhatsApp not connected (status: ${connectionStatus})`);
-  }
-  const normalized = normalizeJid(jid);
-  const paths = imagePaths ? (Array.isArray(imagePaths) ? imagePaths : [imagePaths]) : [];
-  const validPaths = paths.filter(p => fs.existsSync(p));
-
-  if (validPaths.length === 0) {
-    await sock.sendMessage(normalized, { text: message });
-  } else if (validPaths.length === 1) {
-    await sock.sendMessage(normalized, { image: { url: validPaths[0] }, caption: message });
-  } else {
-    for (let i = 0; i < validPaths.length; i++) {
-      const caption = i === 0 ? message : '';
-      await sock.sendMessage(normalized, { image: { url: validPaths[i] }, caption });
-    }
-  }
-}
-
-function getWhatsAppState() {
-  return { status: connectionStatus, qr: currentQRDataURL };
-}
-
-async function disconnectWhatsApp() {
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer);
-    reconnectTimer = null;
-  }
-  if (sock) {
-    try { await sock.logout(); } catch (e) {}
-    sock = null;
-  }
-  // Clear session and auto-generate new QR — user expects to scan new QR after disconnect
-  clearAuthSession();
-  connectionStatus = 'disconnected';
-  currentQRDataURL = null;
-  console.log('[WhatsApp] Disconnected (manual) — clearing session');
-
-  // Kick off fresh connect to generate new QR
-  setTimeout(() => connectWhatsApp().catch(e => console.error('[WhatsApp] Reconnect after disconnect failed:', e.message)), 1000);
 }
 
 module.exports = { connectWhatsApp, disconnectWhatsApp, sendWhatsApp, getWhatsAppState };

@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { queryAll, queryGet, queryRun } = require('../db/database');
 const requireAuth = require('../middleware/auth');
 const { scheduleJob, unscheduleJob, getJobNextRuns } = require('../scheduler');
+const { connectWhatsApp } = require('../services/whatsapp');
 
 router.use(requireAuth);
 
@@ -49,6 +50,18 @@ router.post('/', async (req, res) => {
 
   const newJob = await queryGet('SELECT * FROM jobs WHERE job_id = ?', [result.insertId]);
   scheduleJob(newJob);
+
+  // Lazy connect WhatsApp for this user (if they have any whatsapp recipients)
+  const hasWhatsAppRecipients = await queryGet(
+    'SELECT 1 FROM recipients WHERE job_id = ? AND type = ? LIMIT 1',
+    [newJob.job_id, 'whatsapp']
+  );
+  if (hasWhatsAppRecipients) {
+    connectWhatsApp(req.user.user_id).catch(e =>
+      console.error(`[WhatsApp ${req.user.user_id}] Lazy connect on job create failed:`, e.message)
+    );
+  }
+
   res.status(201).json(newJob);
 });
 

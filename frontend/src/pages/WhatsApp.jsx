@@ -3,12 +3,12 @@ import { api } from '../api';
 import Icon from '../components/Icon';
 
 const STATUS_META = {
-  loading:      { label: 'Checking…',          color: '#94a3b8', icon: 'refresh' },
+  loading:      { label: 'Checking…',           color: '#94a3b8', icon: 'refresh' },
   connecting:   { label: 'Connecting…',         color: '#f59e0b', icon: 'refresh' },
   awaiting_qr:  { label: 'Waiting for QR Scan', color: '#f59e0b', icon: 'clock' },
-  connected:    { label: 'Connected',            color: '#22c55e', icon: 'check' },
-  disconnected: { label: 'Disconnected',         color: '#ef4444', icon: 'x' },
-  error:        { label: 'Error',                color: '#ef4444', icon: 'alert' },
+  connected:    { label: 'Connected',           color: '#22c55e', icon: 'check' },
+  disconnected: { label: 'Disconnected',        color: '#ef4444', icon: 'x' },
+  error:        { label: 'Error',               color: '#ef4444', icon: 'alert' },
 };
 
 export default function WhatsApp() {
@@ -20,7 +20,7 @@ export default function WhatsApp() {
   async function poll() {
     try {
       const s = await api.get('/api/whatsapp/status');
-      if (s.status === 'awaiting_qr') {
+      if (s.status === 'awaiting_qr' || s.status === 'disconnected') {
         try {
           const q = await api.get('/api/whatsapp/qr');
           setState({ status: q.status, qr: q.qr });
@@ -61,6 +61,10 @@ export default function WhatsApp() {
     <div className="animate-in" style={{ maxWidth: 600, margin: '0 auto' }}>
       <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 24, color: '#fff' }}>WhatsApp Connection</h1>
 
+      <p className="text-muted" style={{ marginBottom: 16 }}>
+        Each user connects their own WhatsApp account. Notifications for your jobs will be sent from your linked device.
+      </p>
+
       <div className="card wa-card">
         <div className="wa-status">
           <span className={`status-dot ${state.status}`} style={{ background: meta.color, color: meta.color }} />
@@ -90,18 +94,16 @@ export default function WhatsApp() {
         )}
 
         {state.status === 'awaiting_qr' && !state.qr && (
-          <p className="text-muted">
-            QR code is ready — only admin users can view it here.
-          </p>
+          <p className="text-muted">QR code is loading…</p>
         )}
 
         {(state.status === 'disconnected' || state.status === 'error') && (
           <div style={{ marginTop: 16 }}>
             <p className="text-muted" style={{ marginBottom: 16 }}>
-              WhatsApp is not connected. Click Reconnect to start the pairing process.
+              WhatsApp is not connected. Click Connect to start the pairing process.
             </p>
             <button className="btn btn-primary" onClick={reconnect} disabled={connecting}>
-              {connecting ? 'Connecting…' : <><Icon name="refresh" size={16} /> Reconnect</>}
+              {connecting ? 'Connecting…' : <><Icon name="refresh" size={16} /> Connect</>}
             </button>
           </div>
         )}

@@ -1,43 +1,46 @@
 const router = require('express').Router();
-const { queryGet } = require('../db/database');
 const requireAuth = require('../middleware/auth');
 const { connectWhatsApp, disconnectWhatsApp, getWhatsAppState } = require('../services/whatsapp');
 
 router.use(requireAuth);
 
-async function requireAdmin(req, res, next) {
-  const user = await queryGet('SELECT is_admin FROM users WHERE user_id = ?', [req.user.user_id]);
-  if (!user || !user.is_admin) return res.status(403).json({ error: 'Admin only' });
-  next();
-}
-
-// Any authenticated user can check status
+// Get current user's WhatsApp status
 router.get('/status', (req, res) => {
-  const { status } = getWhatsAppState();
-  res.json({ status });
-});
-
-// Admin only: get QR data URL to display for scanning
-router.get('/qr', requireAdmin, (req, res) => {
-  const { status, qr } = getWhatsAppState();
+  const { status, qr } = getWhatsAppState(req.user.user_id);
   res.json({ status, qr });
 });
 
-// Admin only: manually trigger reconnect
-router.post('/connect', requireAdmin, async (req, res) => {
+// Get current user's QR (lazy connect if not yet started)
+router.get('/qr', async (req, res) => {
   try {
-    await connectWhatsApp();
-    res.json({ ok: true, status: getWhatsAppState().status });
+    const { status, qr } = getWhatsAppState(req.user.user_id);
+    if (status === 'disconnected') {
+      // Lazy connect — trigger and let client poll
+      connectWhatsApp(req.user.user_id).catch(e =>
+        console.error(`[WhatsApp ${req.user.user_id}] Lazy connect failed:`, e.message)
+      );
+    }
+    res.json({ status, qr });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Admin only: manually disconnect WhatsApp
-router.post('/disconnect', requireAdmin, async (req, res) => {
+// Manually trigger connect (e.g. after first login)
+router.post('/connect', async (req, res) => {
   try {
-    await disconnectWhatsApp();
-    res.json({ ok: true, status: getWhatsAppState().status });
+    await connectWhatsApp(req.user.user_id);
+    res.json({ ok: true, status: getWhatsAppState(req.user.user_id).status });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Manually disconnect — clears session and starts fresh QR
+router.post('/disconnect', async (req, res) => {
+  try {
+    await disconnectWhatsApp(req.user.user_id);
+    res.json({ ok: true, status: getWhatsAppState(req.user.user_id).status });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
