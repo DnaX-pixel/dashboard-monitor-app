@@ -71,6 +71,22 @@ async function initSchema() {
     `);
 
     await conn.execute(`
+      CREATE TABLE IF NOT EXISTS user_smtp (
+        user_id      INT PRIMARY KEY,
+        smtp_host    VARCHAR(255) NOT NULL,
+        smtp_port    INT          NOT NULL DEFAULT 587,
+        smtp_user    VARCHAR(255) NOT NULL,
+        smtp_pass    VARCHAR(255) NOT NULL,
+        smtp_from    VARCHAR(255) NOT NULL,
+        use_tls      TINYINT(1)   NOT NULL DEFAULT 1,
+        is_verified  TINYINT(1)   NOT NULL DEFAULT 0,
+        last_error   TEXT,
+        updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+      )
+    `);
+
+    await conn.execute(`
       CREATE TABLE IF NOT EXISTS whatsapp_sessions (
         user_id      INT PRIMARY KEY,
         status       ENUM('disconnected','awaiting_qr','connected') NOT NULL DEFAULT 'disconnected',

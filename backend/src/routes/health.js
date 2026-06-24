@@ -26,11 +26,25 @@ router.get('/', async (req, res) => {
     detail: wa.status,
   };
 
-  // 3. SMTP / Email
-  if (process.env.SMTP_HOST) {
-    checks.smtp = { status: 'ok', label: 'Email SMTP', detail: `${process.env.SMTP_HOST}:${process.env.SMTP_PORT || 587}` };
-  } else {
-    checks.smtp = { status: 'warning', label: 'Email SMTP', detail: 'Not configured' };
+  // 3. SMTP / Email (per-user)
+  try {
+    const smtp = await queryGet(
+      'SELECT smtp_host, smtp_port, is_verified, last_error FROM user_smtp WHERE user_id = ?',
+      [req.user.user_id]
+    );
+    if (smtp) {
+      checks.smtp = {
+        status: smtp.is_verified ? 'ok' : 'warning',
+        label: 'Email SMTP (yours)',
+        detail: smtp.is_verified
+          ? `${smtp.smtp_host}:${smtp.smtp_port}`
+          : `Not verified — ${smtp.last_error || 'click verify in Email Settings'}`,
+      };
+    } else {
+      checks.smtp = { status: 'warning', label: 'Email SMTP (yours)', detail: 'Not configured — go to Email Settings' };
+    }
+  } catch (e) {
+    checks.smtp = { status: 'error', label: 'Email SMTP (yours)', detail: e.message };
   }
 
   // 4. Playwright

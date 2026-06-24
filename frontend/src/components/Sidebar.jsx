@@ -53,6 +53,9 @@ export default function Sidebar({ open, onClose }) {
             <span className="topbar-wa-dot" style={{ background: WA_COLORS[waStatus] || '#7b8095', width: 6, height: 6, borderRadius: '50%' }} />
           </span>
         </Link>
+        <Link to="/email" className={`sidebar-link ${isActive('/email') ? 'active' : ''}`} onClick={onClose}>
+          <Icon name="mail" size={18} /> Email
+        </Link>
         <Link to="/health" className={`sidebar-link ${isActive('/health') ? 'active' : ''}`} onClick={onClose}>
           <Icon name="heart" size={18} /> System Health
         </Link>

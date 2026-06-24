@@ -9,6 +9,7 @@ import JobForm     from './pages/JobForm';
 import JobHistory  from './pages/JobHistory';
 import CompareView from './pages/CompareView';
 import WhatsApp    from './pages/WhatsApp';
+import EmailSettings from './pages/EmailSettings';
 import HealthCheck  from './pages/HealthCheck';
 
 function PrivateRoute({ children }) {
@@ -20,6 +21,7 @@ const PAGE_TITLES = {
   '/': 'Monitoring Jobs',
   '/jobs/new': 'New Job',
   '/whatsapp': 'WhatsApp Connection',
+  '/email': 'Email Settings',
   '/health': 'System Health',
 };
 
@@ -71,6 +73,9 @@ export default function App() {
           } />
           <Route path="/whatsapp" element={
             <PrivateRoute><Layout><WhatsApp /></Layout></PrivateRoute>
+          } />
+          <Route path="/email" element={
+            <PrivateRoute><Layout><EmailSettings /></Layout></PrivateRoute>
           } />
           <Route path="/health" element={
             <PrivateRoute><Layout><HealthCheck /></Layout></PrivateRoute>

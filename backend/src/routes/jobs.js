@@ -62,6 +62,22 @@ router.post('/', async (req, res) => {
     );
   }
 
+  // Check SMTP is configured (if job has email recipients)
+  const hasEmailRecipients = await queryGet(
+    'SELECT 1 FROM recipients WHERE job_id = ? AND type = ? LIMIT 1',
+    [newJob.job_id, 'email']
+  );
+  if (hasEmailRecipients) {
+    const smtp = await queryGet(
+      'SELECT 1 FROM user_smtp WHERE user_id = ? AND is_verified = 1',
+      [req.user.user_id]
+    );
+    if (!smtp) {
+      // Don't block job creation — but log warning
+      console.warn(`[Job ${newJob.job_id}] User ${req.user.user_id} has email recipients but no verified SMTP`);
+    }
+  }
+
   res.status(201).json(newJob);
 });
 

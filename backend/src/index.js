@@ -10,14 +10,15 @@ app.use(express.json());
 // Serve screenshots for frontend thumbnails
 app.use('/static', express.static(process.env.DATA_DIR || path.join(__dirname, '../../data')));
 
-app.use('/api/auth',      require('./routes/auth'));
-app.use('/api/jobs',      require('./routes/jobs'));
-app.use('/api/jobs',      require('./routes/recipients'));
-app.use('/api/jobs',      require('./routes/runs'));
-app.use('/api/jobs',      require('./routes/jobItems'));
-app.use('/api/whatsapp',  require('./routes/whatsapp'));
-app.use('/api/preview',   require('./routes/preview'));
-app.use('/api/health',    require('./routes/health'));
+app.use('/api/auth',          require('./routes/auth'));
+app.use('/api/jobs',          require('./routes/jobs'));
+app.use('/api/jobs',          require('./routes/recipients'));
+app.use('/api/jobs',          require('./routes/runs'));
+app.use('/api/jobs',          require('./routes/jobItems'));
+app.use('/api/whatsapp',      require('./routes/whatsapp'));
+app.use('/api/email',         require('./routes/emailSettings'));
+app.use('/api/preview',       require('./routes/preview'));
+app.use('/api/health',        require('./routes/health'));
 
 app.use((err, req, res, _next) => {
   console.error(err);
