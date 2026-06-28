@@ -1,6 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Icon from './Icon';
 
 const CW = 960;
 const CH = 540;
@@ -208,10 +207,14 @@ export default function CropSelector({ previewUrl, crop, onChange }) {
 
   return (
     <>
-      <div className={`crop-canvas-wrap ${!previewUrl ? 'empty' : ''}`}>
+      <div className="relative rounded-xl overflow-hidden border border-border-subtle bg-surface-container-low">
         {previewUrl && (
-          <button className="btn btn-sm fullscreen-btn" onClick={() => setFullscreen(true)} title="Crop in fullscreen">
-            <Icon name="fullscreen" size={14} /> Fullscreen
+          <button
+            className="absolute top-2.5 right-2.5 z-[5] flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-primary bg-surface/80 backdrop-blur border border-border-bold hover:bg-primary/10 transition-colors"
+            onClick={() => setFullscreen(true)}
+            title="Crop in fullscreen"
+          >
+            <span className="material-symbols-outlined text-sm">fullscreen</span> Fullscreen
           </button>
         )}
         <canvas
@@ -221,27 +224,33 @@ export default function CropSelector({ previewUrl, crop, onChange }) {
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseUp}
+          className="block w-full h-auto cursor-crosshair"
           style={{ opacity: isMoving ? 0.95 : 1 }}
         />
         {!previewUrl && (
-          <div className="crop-empty">
-            <span className="crop-icon">Screenshot Preview</span>
-            <span>Enter a URL above and click Preview to load the page</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-text-dim pointer-events-none">
+            <span className="material-symbols-outlined text-4xl text-primary opacity-40">image</span>
+            <span className="font-[JetBrains_Mono] text-xs uppercase tracking-wider text-primary opacity-70">Screenshot Preview</span>
+            <span className="text-sm">Enter a URL above and click Capture to load the page</span>
           </div>
         )}
       </div>
 
       {/* Fullscreen overlay — rendered via portal to escape parent backdrop-filter */}
       {fullscreen && createPortal(
-        <div className="crop-fullscreen-overlay">
-          <div className="crop-fullscreen-header">
-            <span className="crop-fullscreen-title"><Icon name="fullscreen" size={14} /> Fullscreen Crop Mode</span>
-            <div className="crop-fullscreen-actions">
-              <span className="crop-fullscreen-hint">Drag to select crop area · click outside or Done to close</span>
-              <button className="btn btn-sm btn-primary" onClick={() => setFullscreen(false)}><Icon name="check" size={14} /> Done</button>
+        <div className="fixed inset-0 z-[9999] bg-background flex flex-col">
+          <div className="flex items-center justify-between px-5 py-2.5 bg-surface/90 backdrop-blur border-b border-border-subtle">
+            <span className="flex items-center gap-2 text-sm font-bold text-text-primary">
+              <span className="material-symbols-outlined text-base">fullscreen</span> Fullscreen Crop Mode
+            </span>
+            <div className="flex items-center gap-4">
+              <span className="font-[JetBrains_Mono] text-xs text-text-dim">Drag to select crop area · click outside or Done to close</span>
+              <button onClick={() => setFullscreen(false)} className="indigo-violet-gradient text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 hover:brightness-110 transition-all">
+                <span className="material-symbols-outlined text-sm">check</span> Done
+              </button>
             </div>
           </div>
-          <div className="crop-fullscreen-canvas-wrap" onClick={(e) => e.target === e.currentTarget && setFullscreen(false)}>
+          <div className="flex-1 overflow-hidden relative" onClick={(e) => e.target === e.currentTarget && setFullscreen(false)}>
             <canvas
               ref={fullCanvasRef}
               width={FW} height={FH}
@@ -249,6 +258,7 @@ export default function CropSelector({ previewUrl, crop, onChange }) {
               onMouseMove={onFullMouseMove}
               onMouseUp={onFullMouseUp}
               onMouseLeave={onFullMouseUp}
+              className="w-full h-full block cursor-crosshair"
               style={{ opacity: fullMoving ? 0.95 : 1 }}
             />
           </div>

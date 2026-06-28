@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WhatsApp Connection | WebGuard Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    
+    @keyframes glowPulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .status-pulse {
+      animation: glowPulse 2s infinite;
+    }
+
+    /* Glassmorphism scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#2f303a",
+            "surface-container-high": "#282933",
+            "surface-dim": "#12131c",
+            "on-secondary": "#3c0091",
+            "primary-fixed-dim": "#c0c1ff",
+            "primary-container": "#8083ff",
+            "border-subtle": "rgba(255, 255, 255, 0.06)",
+            "on-tertiary-container": "#000703",
+            "error": "#ffb4ab",
+            "secondary-fixed-dim": "#d0bcff",
+            "secondary-fixed": "#e9ddff",
+            "on-primary-fixed": "#07006c",
+            "on-primary": "#1000a9",
+            "success": "#10b981",
+            "on-primary-fixed-variant": "#2f2ebe",
+            "tertiary-fixed-dim": "#4edea3",
+            "surface-bright": "#383843",
+            "tertiary-container": "#00885d",
+            "on-primary-container": "#0d0096",
+            "outline": "#908fa0",
+            "warning": "#f59e0b",
+            "primary": "#c0c1ff",
+            "on-error": "#690005",
+            "on-tertiary": "#003824",
+            "on-surface": "#e3e1ef",
+            "secondary-container": "#571bc1",
+            "on-tertiary-fixed": "#002113",
+            "border-bold": "rgba(255, 255, 255, 0.1)",
+            "on-secondary-fixed": "#23005c",
+            "text-muted": "#7b8095",
+            "surface": "#0f1120",
+            "inverse-primary": "#494bd6",
+            "surface-interactive": "#1c1f30",
+            "tertiary-fixed": "#6ffbbe",
+            "on-surface-variant": "#c7c4d7",
+            "secondary": "#d0bcff",
+            "outline-variant": "#464554",
+            "primary-fixed": "#e1e0ff",
+            "surface-container-highest": "#33343e",
+            "surface-container-low": "#1a1b24",
+            "text-dim": "#9ca0b3",
+            "surface-tint": "#c0c1ff",
+            "on-secondary-container": "#c4abff",
+            "error-container": "#93000a",
+            "background": "#12131c",
+            "on-tertiary-fixed-variant": "#005236",
+            "danger": "#f43f5e",
+            "on-secondary-fixed-variant": "#5516be",
+            "tertiary": "#4edea3",
+            "on-background": "#e3e1ef",
+            "text-primary": "#e8eaf2",
+            "inverse-surface": "#e3e1ef",
+            "surface-container-lowest": "#0d0e17",
+            "surface-container": "#1e1f29",
+            "surface-variant": "#33343e",
+            "on-error-container": "#ffdad6",
+            "surface-elevated": "#161827"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit-tight": "4px",
+            "content-padding": "28px",
+            "card-padding": "24px",
+            "form-gutter": "18px",
+            "sidebar-width": "260px",
+            "topbar-height": "64px",
+            "unit-base": "8px",
+            "grid-gap": "16px"
+          },
+          "fontFamily": {
+            "sidebar-link": ["DM Sans"],
+            "label-caps": ["DM Sans"],
+            "h1": ["Plus Jakarta Sans"],
+            "body-lg": ["DM Sans"],
+            "data-display": ["Plus Jakarta Sans"],
+            "mono-technical": ["JetBrains Mono"],
+            "body-sm": ["DM Sans"],
+            "h2": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "sidebar-link": ["10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+            "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+            "h1": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "fontWeight": "500" }],
+            "data-display": ["28px", { "lineHeight": "34px", "fontWeight": "800" }],
+            "mono-technical": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "h2": ["15px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary selection:bg-primary/30 selection:text-primary min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-border-subtle shadow-sm flex flex-col p-unit-base z-[60]">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">monitor_heart</span>
+</div>
+<div>
+<h1 class="font-h1 text-[18px] leading-tight bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</h1>
+<p class="font-body-sm text-[11px] text-text-muted uppercase tracking-wider">Monitoring Suite</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted font-sidebar-link text-sidebar-link hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span>Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-bold bg-surface-interactive font-sidebar-link text-sidebar-link scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span>WhatsApp</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted font-sidebar-link text-sidebar-link hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span>Email</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted font-sidebar-link text-sidebar-link hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Health</span>
+</a>
+</nav>
+<div class="pt-4 border-t border-border-subtle space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted font-sidebar-link text-sidebar-link hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span>Profile</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted font-sidebar-link text-sidebar-link hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="sticky top-0 z-50 w-full h-[64px] bg-surface/70 backdrop-blur-md border-b border-border-subtle shadow-sm flex justify-between items-center px-content-padding ml-[260px] max-w-[calc(100%-260px)]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-dim text-[18px]">search</span>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-lg py-2 pl-10 pr-4 text-body-sm focus:outline-none focus:border-primary transition-colors placeholder:text-text-dim" placeholder="Search monitoring logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="p-2 text-text-dim hover:text-primary transition-opacity opacity-80 active:opacity-60">
+<span class="material-symbols-outlined">schedule</span>
+</button>
+<button class="p-2 text-text-dim hover:text-primary relative transition-opacity opacity-80 active:opacity-60">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-border-subtle"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="font-h2 text-h2 text-text-primary leading-none">Alex Rivera</p>
+<p class="font-body-sm text-[11px] text-text-dim">Admin</p>
+</div>
+<img class="w-10 h-10 rounded-lg border border-border-bold object-cover shadow-sm" data-alt="A professional studio portrait of a young tech professional with short dark hair and a confident expression, set against a dark, minimalist architectural background with subtle violet lighting accents. The style is premium SaaS corporate photography with high-end lens blur and soft, dramatic shadows that highlight a professional persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHeM3Zvka36wv2BILEEb-96YjeiwQ8oixRjBCDEJvV3l1IOkORxBJYMZmYhQY0SbO7DC6pWQZ0TnN0b1EfgsI6s75g_cZn_7lOf1W1UAUsNyqUCewmtB1CqUgjfibh1RBDbIxhCTbUcCuNQWG6x1p30vTi2nPJSV8j00Jjod_rg-jYMUiMzmACkPQvMrqKxyCqmoRSoQjSChFSdcebE7ZLzVqC425XFVmBwJdsK19klbmIcs50bkJvVercrPDIvbSvLDKorZqRPCT9"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[260px] min-h-[calc(100vh-64px)] p-content-padding flex items-center justify-center relative overflow-hidden">
+<!-- Atmospheric Background Element -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-tertiary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="w-full max-w-[600px] z-10">
+<!-- Section Header -->
+<div class="mb-10 text-center">
+<h2 class="font-h1 text-[32px] mb-2 tracking-tight">WhatsApp Connection</h2>
+<p class="font-body-lg text-text-dim">Sync your business communications with the WebGuard Pro monitoring ecosystem.</p>
+</div>
+<!-- Connection Interface Card -->
+<div class="bg-surface border border-border-subtle rounded-xl shadow-sm overflow-hidden relative group">
+<!-- SVG Background Accents (From Style Guidance) -->
+<div class="absolute inset-0 pointer-events-none opacity-[0.03] overflow-hidden">
+<svg height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<circle cx="90" cy="10" fill="white" r="20"></circle>
+<circle cx="85" cy="15" fill="white" r="25"></circle>
+<circle cx="80" cy="20" fill="white" r="30"></circle>
+</svg>
+</div>
+<!-- Status Header -->
+<div class="p-card-padding border-b border-border-subtle flex items-center justify-between transition-colors duration-500" id="status-card">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center relative" id="status-indicator">
+<span class="material-symbols-outlined text-text-muted text-[28px]" id="status-icon">qr_code_scanner</span>
+<!-- Pulse effect added via JS when connected -->
+<div class="absolute inset-0 rounded-full" id="status-glow"></div>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-text-dim block uppercase">Current Status</span>
+<h3 class="font-h2 text-h2 text-text-primary text-[18px]" id="status-text">Waiting for QR Scan</h3>
+</div>
+</div>
+<div class="px-4 py-1.5 rounded-full border border-warning/20 bg-warning/5 text-warning font-label-caps text-[10px] flex items-center gap-2" id="status-pill">
+<span class="w-1.5 h-1.5 rounded-full bg-warning"></span>
+            DISCONNECTED
+          </div>
+</div>
+<!-- QR Display Area -->
+<div class="p-10 flex flex-col items-center" id="qr-container">
+<div class="relative group/qr p-4 bg-white rounded-xl shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+<!-- Placeholder QR Code Image -->
+<img class="w-[280px] h-[280px] object-cover" data-alt="A clean, high-contrast QR code centered on a square white canvas. The QR code has rounded corners and intricate data patterns. The visual style is modern, technical, and high-fidelity, designed to look like a high-end SaaS authentication interface. Soft ambient shadows ground the code against a dark, premium background, reflecting a professional security dashboard aesthetic." id="qr-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi1iwhz5-zymiyjs3wiCInd4eblDWbI72u5CZgfjV2nFWUkMjWyupgFZVGlqQOLUEbUQRhGc0JF2Ex2ouh4ccAHgaKxhMIS0t9YhiLvqhT9O6IBvLR7GCtWJQ5ogpw9maF7bj__oD2F57YXdGBB-BCiX3cRj4tmYhYZJmxyrjAFuIkKKmXaZPE0N6mLcVLit0lSvaxHs7_83uYnRiyllDA2EsoOCrjJd2DtwgN_y2VrjBppjex9t_yz3xKJv2P_TflBl1FMwNzsMZJ"/>
+<!-- Success Overlay (Hidden by default) -->
+<div class="absolute inset-0 bg-surface/90 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500" id="success-overlay">
+<div class="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-success text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="font-h2 text-h2 text-success">Secure Connection Established</p>
+</div>
+</div>
+<!-- Instructions -->
+<div class="mt-8 text-center max-w-[400px]" id="instructions">
+<p class="font-body-lg text-text-primary mb-4">Open WhatsApp on your phone and scan the code above to connect.</p>
+<div class="grid grid-cols-3 gap-4 text-center">
+<div class="p-3 bg-surface-container-low rounded-lg border border-border-subtle">
+<p class="font-label-caps text-text-dim mb-1">STEP 1</p>
+<p class="font-body-sm text-text-primary">Open Settings</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg border border-border-subtle">
+<p class="font-label-caps text-text-dim mb-1">STEP 2</p>
+<p class="font-body-sm text-text-primary">Tap Linked Devices</p>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg border border-border-subtle">
+<p class="font-label-caps text-text-dim mb-1">STEP 3</p>
+<p class="font-body-sm text-text-primary">Point Camera</p>
+</div>
+</div>
+</div>
+<!-- Connected View Action -->
+<div class="hidden mt-4 w-full text-center py-6" id="connected-view">
+<div class="space-y-6">
+<div class="flex items-center justify-center gap-12 text-center">
+<div>
+<p class="font-label-caps text-text-dim">Last Sync</p>
+<p class="font-mono-technical text-primary">Just now</p>
+</div>
+<div>
+<p class="font-label-caps text-text-dim">Signal</p>
+<p class="font-mono-technical text-success">Excellent</p>
+</div>
+</div>
+<button class="px-8 py-3 bg-surface-interactive border border-border-subtle hover:bg-surface-container-high text-text-primary rounded-lg font-body-lg transition-all duration-200" onclick="simulateReset()">
+                  Disconnect Account
+               </button>
+</div>
+</div>
+</div>
+<!-- Footer Help -->
+<div class="px-card-padding py-4 bg-surface-container-low/50 flex justify-between items-center">
+<div class="flex items-center gap-2 text-text-dim">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span class="font-body-sm">End-to-end encrypted</span>
+</div>
+<button class="bg-gradient-to-br from-primary to-secondary text-on-primary-container px-6 py-2 rounded-lg font-body-lg font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" id="toggle-btn" onclick="simulateConnection()">
+            Simulate Connection
+          </button>
+</div>
+<!-- Left status accent bar (Style Guidance) -->
+<div class="absolute left-0 top-0 bottom-0 w-[3px] bg-warning transition-colors duration-500" id="status-bar"></div>
+</div>
+<!-- Secondary Info Cards (Bento style) -->
+<div class="grid grid-cols-2 gap-grid-gap mt-grid-gap">
+<div class="bg-surface-container-low border border-border-subtle rounded-xl p-card-padding flex items-center gap-4 hover:border-primary/30 transition-colors">
+<div class="p-3 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">history</span>
+</div>
+<div>
+<p class="font-label-caps text-text-dim">MESSAGES LOGGED</p>
+<p class="font-data-display text-text-primary text-[20px]">1,248</p>
+</div>
+</div>
+<div class="bg-surface-container-low border border-border-subtle rounded-xl p-card-padding flex items-center gap-4 hover:border-tertiary/30 transition-colors">
+<div class="p-3 bg-tertiary/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">speed</span>
+</div>
+<div>
+<p class="font-label-caps text-text-dim">UPTIME</p>
+<p class="font-data-display text-text-primary text-[20px]">99.9%</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+    let isConnected = false;
+
+    function simulateConnection() {
+      if (isConnected) return;
+      isConnected = true;
+
+      // Update UI to "Connected" state
+      const statusBar = document.getElementById('status-bar');
+      const statusPill = document.getElementById('status-pill');
+      const statusText = document.getElementById('status-text');
+      const statusIcon = document.getElementById('status-icon');
+      const statusGlow = document.getElementById('status-glow');
+      const successOverlay = document.getElementById('success-overlay');
+      const instructions = document.getElementById('instructions');
+      const connectedView = document.getElementById('connected-view');
+      const toggleBtn = document.getElementById('toggle-btn');
+      const qrImage = document.getElementById('qr-image');
+
+      // Styles
+      statusBar.classList.replace('bg-warning', 'bg-success');
+      statusPill.classList.replace('border-warning/20', 'border-success/20');
+      statusPill.classList.replace('bg-warning/5', 'bg-success/5');
+      statusPill.classList.replace('text-warning', 'text-success');
+      statusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-success status-pulse"></span>CONNECTED';
+      
+      statusText.innerText = 'Connected as WebGuard Enterprise';
+      statusIcon.innerText = 'verified_user';
+      statusIcon.classList.replace('text-text-muted', 'text-success');
+      
+      // Activate glowPulse animation
+      statusGlow.classList.add('status-pulse', 'bg-success/20');
+
+      // Show success overlay then transition to stats
+      successOverlay.classList.replace('opacity-0', 'opacity-100');
+      
+      toggleBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      toggleBtn.innerText = 'Connection Active';
+
+      setTimeout(() => {
+        qrImage.classList.add('opacity-0');
+        successOverlay.classList.add('opacity-0');
+        instructions.classList.add('hidden');
+        connectedView.classList.remove('hidden');
+      }, 2000);
+    }
+
+    function simulateReset() {
+      window.location.reload();
+    }
+  </script>
+</body></html>

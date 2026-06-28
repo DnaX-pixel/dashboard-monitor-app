@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WebGuard Pro - New Job</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#2f303a",
+                    "surface-container-high": "#282933",
+                    "surface-dim": "#12131c",
+                    "on-secondary": "#3c0091",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "primary-container": "#8083ff",
+                    "border-subtle": "rgba(255, 255, 255, 0.06)",
+                    "on-tertiary-container": "#000703",
+                    "error": "#ffb4ab",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "secondary-fixed": "#e9ddff",
+                    "on-primary-fixed": "#07006c",
+                    "on-primary": "#1000a9",
+                    "success": "#10b981",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "surface-bright": "#383843",
+                    "tertiary-container": "#00885d",
+                    "on-primary-container": "#0d0096",
+                    "outline": "#908fa0",
+                    "warning": "#f59e0b",
+                    "primary": "#c0c1ff",
+                    "on-error": "#690005",
+                    "on-tertiary": "#003824",
+                    "on-surface": "#e3e1ef",
+                    "secondary-container": "#571bc1",
+                    "on-tertiary-fixed": "#002113",
+                    "border-bold": "rgba(255, 255, 255, 0.1)",
+                    "on-secondary-fixed": "#23005c",
+                    "text-muted": "#7b8095",
+                    "surface": "#0f1120",
+                    "inverse-primary": "#494bd6",
+                    "surface-interactive": "#1c1f30",
+                    "tertiary-fixed": "#6ffbbe",
+                    "on-surface-variant": "#c7c4d7",
+                    "secondary": "#d0bcff",
+                    "outline-variant": "#464554",
+                    "primary-fixed": "#e1e0ff",
+                    "surface-container-highest": "#33343e",
+                    "surface-container-low": "#1a1b24",
+                    "text-dim": "#9ca0b3",
+                    "surface-tint": "#c0c1ff",
+                    "on-secondary-container": "#c4abff",
+                    "error-container": "#93000a",
+                    "background": "#12131c",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "danger": "#f43f5e",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "tertiary": "#4edea3",
+                    "on-background": "#e3e1ef",
+                    "text-primary": "#e8eaf2",
+                    "inverse-surface": "#e3e1ef",
+                    "surface-container-lowest": "#0d0e17",
+                    "surface-container": "#1e1f29",
+                    "surface-variant": "#33343e",
+                    "on-error-container": "#ffdad6",
+                    "surface-elevated": "#161827"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit-tight": "4px",
+                    "content-padding": "28px",
+                    "card-padding": "24px",
+                    "form-gutter": "18px",
+                    "sidebar-width": "260px",
+                    "topbar-height": "64px",
+                    "unit-base": "8px",
+                    "grid-gap": "16px"
+            },
+            "fontFamily": {
+                    "sidebar-link": ["DM Sans"],
+                    "label-caps": ["DM Sans"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "body-lg": ["DM Sans"],
+                    "data-display": ["Plus Jakarta Sans"],
+                    "mono-technical": ["JetBrains Mono"],
+                    "body-sm": ["DM Sans"],
+                    "h2": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "sidebar-link": ["10px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                    "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["14px", {"lineHeight": "22px", "fontWeight": "500"}],
+                    "data-display": ["28px", {"lineHeight": "34px", "fontWeight": "800"}],
+                    "mono-technical": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h2": ["15px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0a0b14;
+            color: #e3e1ef;
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 32, 0.7);
+            backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(192, 193, 255, 0.15);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glow-button:active {
+            transform: scale(0.98);
+        }
+        .status-dot-active {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.6; transform: scale(0.9); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="dark bg-background text-on-background min-h-screen">
+<!-- Side Navigation Bar -->
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-border-subtle flex flex-col p-unit-base shadow-sm z-[60]">
+<div class="px-4 py-6 mb-4">
+<h1 class="font-h1 text-h1 bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</h1>
+<p class="font-body-sm text-body-sm text-text-dim">Monitoring Suite</p>
+</div>
+<div class="flex flex-col gap-1 px-2">
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-interactive rounded-lg transition-transform active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span class="font-sidebar-link text-sidebar-link">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-sidebar-link text-sidebar-link">WhatsApp</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-sidebar-link text-sidebar-link">Email</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-sidebar-link text-sidebar-link">Health</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-1 px-2 border-t border-border-subtle pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-sidebar-link text-sidebar-link">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-sidebar-link text-sidebar-link">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full h-[64px] bg-surface/70 backdrop-blur-md border-b border-border-subtle flex justify-between items-center px-content-padding pl-[288px] shadow-sm">
+<div class="flex items-center gap-4">
+<h2 class="font-h2 text-h2 text-primary">Monitor Dashboard</h2>
+<div class="h-4 w-px bg-border-subtle"></div>
+<span class="text-text-dim font-body-sm">New Monitoring Job</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-text-dim group-hover:text-primary transition-colors cursor-pointer">schedule</span>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined text-text-dim group-hover:text-primary transition-colors cursor-pointer">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full"></span>
+</div>
+<div class="w-8 h-8 rounded-full border border-border-bold overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional high-end headshot of a software engineer in a dark tech-focused environment. The lighting is dramatic and cinematic, with subtle violet and indigo rim lights that match the premium dashboard aesthetic. The background is a soft-focus laboratory or server room with blurred glowing lights, suggesting a high-performance technical setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcnznmWS7LD2Btwr4Dr8ncSSTHAOjRdYSupDffXnRTMhyZbwx0ZJtHwNzZxsZkP_Ni8fbA4AMrhCbBXOAsEfgPKWHasmW5oHuh-LoIG_ra-_-X-brZfgY8CP9q5NljJ4G42aosO04hbDmHortLItFHoV6uC08zpr0VsoqK3oUGVbAWIGTNHs9rBQOYOQc9P4AP9Deyckzr8TT3HwKEe6uIgi9RN5Skj1iD1ikFLB3pPinVp_74g8_C5lrXMoZMpHDsGravfoEwY4vs"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[260px] p-content-padding max-w-[1400px]">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-grid-gap">
+<!-- Left Column: Forms -->
+<div class="lg:col-span-7 space-y-grid-gap">
+<!-- Job Details Card -->
+<section class="glass-panel rounded-xl p-card-padding">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">assignment</span>
+</div>
+<h3 class="font-h2 text-h2 text-text-primary">Job Details</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-text-dim">Multi-URL Mode</span>
+<button class="w-10 h-5 bg-surface-container-highest rounded-full relative transition-colors">
+<div class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+</button>
+</div>
+</div>
+<div class="space-y-form-gutter">
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-2">TARGET URL</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-3 text-text-primary placeholder:text-text-muted transition-all outline-none" placeholder="https://app.monitoring.io/dashboard" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-dim">link</span>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-2">FRIENDLY NAME</label>
+<input class="w-full bg-surface-container-low border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-3 text-text-primary placeholder:text-text-muted transition-all outline-none" placeholder="Enterprise Mainframe Status" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-2">NOTIFICATION METHOD</label>
+<select class="w-full bg-surface-container-low border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-3 text-text-primary transition-all outline-none appearance-none">
+<option>Immediate (Push)</option>
+<option>Batched (Hourly)</option>
+<option>Daily Digest</option>
+</select>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-2">FAIL THRESHOLD</label>
+<input class="w-full bg-surface-container-low border border-border-subtle focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-3 text-text-primary transition-all outline-none" type="number" value="3"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Schedule Picker Card -->
+<section class="glass-panel rounded-xl p-card-padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary">schedule</span>
+</div>
+<h3 class="font-h2 text-h2 text-text-primary">Schedule Execution</h3>
+</div>
+<div class="space-y-6">
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-2 bg-primary text-on-primary font-label-caps text-label-caps rounded-lg">MON</button>
+<button class="px-3 py-2 bg-surface-container-high text-text-dim font-label-caps text-label-caps rounded-lg hover:text-primary">TUE</button>
+<button class="px-3 py-2 bg-primary text-on-primary font-label-caps text-label-caps rounded-lg">WED</button>
+<button class="px-3 py-2 bg-primary text-on-primary font-label-caps text-label-caps rounded-lg">THU</button>
+<button class="px-3 py-2 bg-primary text-on-primary font-label-caps text-label-caps rounded-lg">FRI</button>
+<button class="px-3 py-2 bg-surface-container-high text-text-dim font-label-caps text-label-caps rounded-lg hover:text-primary">SAT</button>
+<button class="px-3 py-2 bg-surface-container-high text-text-dim font-label-caps text-label-caps rounded-lg hover:text-primary">SUN</button>
+</div>
+<div class="grid grid-cols-2 gap-grid-gap">
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-border-subtle">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label-caps text-label-caps text-text-dim">INTERVAL POLLING</span>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">toggle_on</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-data-display text-data-display text-text-primary">15</span>
+<span class="font-body-sm text-body-sm text-text-muted pb-1">Minutes</span>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-border-subtle opacity-50">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label-caps text-label-caps text-text-dim">ALARM MODE</span>
+<span class="material-symbols-outlined text-text-muted text-sm">toggle_off</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-data-display text-data-display text-text-muted">--:--</span>
+<span class="font-body-sm text-body-sm text-text-muted pb-1">UTC</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-2">CRON EXPRESSION (ADVANCED)</label>
+<div class="font-mono-technical text-mono-technical bg-surface-container-lowest border border-border-subtle rounded-lg p-4 text-tertiary">
+                                0 15 10 * * MON,WED,THU,FRI
+                            </div>
+</div>
+</div>
+</section>
+<!-- Notification Recipients -->
+<section class="glass-panel rounded-xl p-card-padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center border border-secondary/20">
+<span class="material-symbols-outlined text-secondary">group</span>
+</div>
+<h3 class="font-h2 text-h2 text-text-primary">Notification Recipients</h3>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">mail</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-text-primary">Engineering Alert Slack</p>
+<p class="font-label-caps text-[10px] text-text-muted">INTEGRATION ACTIVE</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-dim cursor-pointer hover:text-danger transition-colors">close</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-border-subtle">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-tertiary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-lg">sms</span>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-text-primary">+1 (555) 012-3456</p>
+<p class="font-label-caps text-[10px] text-text-muted">SMS VERIFIED</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-dim cursor-pointer hover:text-danger transition-colors">close</span>
+</div>
+<button class="w-full py-3 border-2 border-dashed border-border-subtle rounded-lg text-text-dim font-label-caps text-label-caps hover:border-primary hover:text-primary transition-all">
+                            + ADD RECIPIENT OR WEBHOOK
+                        </button>
+</div>
+</section>
+</div>
+<!-- Right Column: Previews & Coordinates -->
+<div class="lg:col-span-5 space-y-grid-gap">
+<!-- Crop Area Preview Card -->
+<section class="glass-panel rounded-xl overflow-hidden">
+<div class="p-card-padding border-b border-border-subtle flex justify-between items-center">
+<h3 class="font-h2 text-h2 text-text-primary">Visual Targeting</h3>
+<div class="flex items-center gap-2">
+<div class="status-dot-active"></div>
+<span class="font-label-caps text-label-caps text-success">CAMERA LIVE</span>
+</div>
+</div>
+<div class="aspect-video relative group overflow-hidden bg-black">
+<div class="absolute inset-0 z-10 bg-black/40 flex items-center justify-center transition-opacity group-hover:bg-black/20">
+<button class="px-6 py-3 bg-primary text-on-primary font-h2 text-h2 rounded-xl glow-button flex items-center gap-2">
+<span class="material-symbols-outlined">screenshot_region</span>
+                                Capture Screenshot
+                            </button>
+</div>
+<img class="w-full h-full object-cover" data-alt="A high-resolution screenshot of a complex data visualization dashboard. The dashboard features several dark-themed charts with indigo and cyan neon glow lines representing real-time stock data or network traffic. The visual is captured in a wide-angle perspective within a professional monitoring software interface, showing UI elements like scrollbars and navigation panes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJbt6DSV5FSHUrKaRvnLH0Nax2hlRC8RDBM2d4nztv2zSsMcfPrkjXN4qY_kfIbmHoN0C3MlgOVddu7GDrMJD5J6Ox0z7W-DVZ9F00x9dr1lFx5s9NSF_QeboExwJgE57P70Ppy4tZnKyfR9JQWeLJmD_ZBVqi3ydO-6jTfE88H-lBVet5VIX8MRNVwhvIcIiQeO-j9WKZKurYvoUd3zA7AHOcTirUggXNurSvnkRpyBMpsq0aOIpSst0Cs5FE9ymdcaXL1rCZuHi_"/>
+<!-- Simulated Crop Box -->
+<div class="absolute top-1/4 left-1/4 w-1/2 h-1/2 border-2 border-primary z-20 pointer-events-none shadow-[0_0_50px_rgba(192,193,255,0.4)]">
+<div class="absolute -top-3 -left-3 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-sm"></div>
+<div class="absolute -top-3 -right-3 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-sm"></div>
+<div class="absolute -bottom-3 -left-3 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-sm"></div>
+<div class="absolute -bottom-3 -right-3 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-sm"></div>
+</div>
+</div>
+<div class="p-card-padding">
+<p class="font-body-sm text-body-sm text-text-dim mb-4">Select the specific area on the page you wish to monitor for visual changes. We will ignore all other pixel data.</p>
+<div class="flex gap-4">
+<button class="flex-1 py-3 bg-surface-container-high rounded-lg font-label-caps text-label-caps text-text-primary hover:bg-surface-interactive transition-colors">FULL PAGE</button>
+<button class="flex-1 py-3 bg-primary/20 border border-primary/40 rounded-lg font-label-caps text-label-caps text-primary">CUSTOM CROP</button>
+</div>
+</div>
+</section>
+<!-- Crop Coordinates Card -->
+<section class="glass-panel rounded-xl p-card-padding">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">straighten</span>
+</div>
+<h3 class="font-h2 text-h2 text-text-primary">Precision Geometry</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-1">X-ORIGIN (PX)</label>
+<div class="font-mono-technical text-mono-technical text-text-primary bg-surface-container-low p-3 rounded-lg border border-border-subtle">
+                                    320.00
+                                </div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-1">Y-ORIGIN (PX)</label>
+<div class="font-mono-technical text-mono-technical text-text-primary bg-surface-container-low p-3 rounded-lg border border-border-subtle">
+                                    180.00
+                                </div>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-1">WIDTH (PX)</label>
+<div class="font-mono-technical text-mono-technical text-text-primary bg-surface-container-low p-3 rounded-lg border border-border-subtle">
+                                    640.00
+                                </div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-text-dim mb-1">HEIGHT (PX)</label>
+<div class="font-mono-technical text-mono-technical text-text-primary bg-surface-container-low p-3 rounded-lg border border-border-subtle">
+                                    360.00
+                                </div>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-border-subtle">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-caps text-label-caps text-text-dim">PIXEL SENSITIVITY</span>
+<span class="font-mono-technical text-mono-technical text-primary">2.5%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/4"></div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex gap-4">
+<button class="flex-1 py-4 bg-surface-container-high rounded-xl font-h2 text-h2 text-text-muted hover:text-text-primary transition-all">CANCEL</button>
+<button class="flex-[2] py-4 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-xl font-h1 text-h1 glow-button">DEPLOY MONITOR</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Success Feedback Overlay (Hidden by default, for demonstration) -->
+<div class="fixed bottom-8 right-8 glass-panel p-4 rounded-xl shadow-2xl flex items-center gap-4 translate-y-24 transition-transform duration-500 opacity-0 pointer-events-none" id="toast">
+<div class="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-success">check_circle</span>
+</div>
+<div>
+<h4 class="font-h2 text-h2 text-text-primary">Changes Saved</h4>
+<p class="font-body-sm text-body-sm text-text-dim">Job monitoring updated successfully.</p>
+</div>
+</div>
+<script>
+        // Simple Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Toggle state for switches
+        document.querySelectorAll('button.relative').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const circle = toggle.querySelector('div');
+                if (circle.classList.contains('left-1')) {
+                    circle.classList.replace('left-1', 'right-1');
+                    toggle.classList.replace('bg-surface-container-highest', 'bg-primary');
+                } else {
+                    circle.classList.replace('right-1', 'left-1');
+                    toggle.classList.replace('bg-primary', 'bg-surface-container-highest');
+                }
+            });
+        });
+    </script>
+</body></html>

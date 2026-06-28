@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Management | WebGuard Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#464554",
+                        "background": "#0a0b14", // Updated to Obsidian Flux base
+                        "surface-container-highest": "#33343e",
+                        "surface-bright": "#383843",
+                        "text-primary": "#e8eaf2",
+                        "on-secondary-fixed": "#23005c",
+                        "border-bold": "rgba(255, 255, 255, 0.1)",
+                        "tertiary-container": "#00885d",
+                        "on-secondary": "#3c0091",
+                        "text-muted": "#7b8095",
+                        "on-tertiary-container": "#000703",
+                        "surface-dim": "#12131c",
+                        "on-tertiary": "#003824",
+                        "on-primary-fixed": "#07006c",
+                        "secondary": "#d0bcff",
+                        "surface-container-lowest": "#0d0e17",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "error-container": "#93000a",
+                        "tertiary": "#4edea3",
+                        "surface-tint": "#c0c1ff",
+                        "surface-elevated": "#161827",
+                        "surface": "#0f1120",
+                        "inverse-on-surface": "#2f303a",
+                        "on-primary": "#1000a9",
+                        "surface-container": "#1e1f29",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "error": "#ffb4ab",
+                        "secondary-container": "#571bc1",
+                        "inverse-primary": "#494bd6",
+                        "on-surface": "#e3e1ef",
+                        "inverse-surface": "#e3e1ef",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-error-container": "#ffdad6",
+                        "text-dim": "#9ca0b3",
+                        "danger": "#f43f5e",
+                        "border-subtle": "rgba(255, 255, 255, 0.06)",
+                        "on-secondary-container": "#c4abff",
+                        "surface-interactive": "#1c1f30",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-container-high": "#282933",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-primary-container": "#0d0096",
+                        "surface-variant": "#33343e",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "primary": "#6366f1", // Updated to Indigo 600 for Obsidian Flux
+                        "on-surface-variant": "#c7c4d7",
+                        "secondary-fixed": "#e9ddff",
+                        "warning": "#f59e0b",
+                        "surface-container-low": "#1a1b24",
+                        "primary-container": "#6366f1",
+                        "success": "#10b981",
+                        "on-background": "#e3e1ef",
+                        "outline": "#908fa0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gap": "16px",
+                        "content-padding": "28px",
+                        "topbar-height": "64px",
+                        "unit-tight": "4px",
+                        "sidebar-width": "260px",
+                        "form-gutter": "18px",
+                        "card-padding": "24px",
+                        "unit-base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["DM Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "body-lg": ["DM Sans"],
+                        "body-sm": ["DM Sans"],
+                        "data-display": ["Plus Jakarta Sans"],
+                        "mono-technical": ["JetBrains Mono"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "sidebar-link": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                        "h2": ["15px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["14px", {"lineHeight": "22px", "fontWeight": "500"}],
+                        "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-display": ["28px", {"lineHeight": "34px", "fontWeight": "800"}],
+                        "mono-technical": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "sidebar-link": ["10px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0b14;
+            color: #e8eaf2;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 32, 0.7);
+            backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .sidebar-active {
+            color: #c0c1ff;
+            font-weight: 700;
+            background: rgba(28, 31, 48, 1);
+            border-radius: 0.5rem;
+        }
+        .glow-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .7; transform: scale(1.1); }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="font-body-sm selection:bg-primary selection:text-white">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface flex flex-col p-unit-base border-r border-border-subtle z-[60]">
+<div class="px-4 py-6 mb-8">
+<h1 class="font-h1 text-h1 bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</h1>
+<p class="font-body-sm text-text-muted mt-1 opacity-60">Monitoring Suite</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 font-sidebar-link text-sidebar-link text-text-muted hover:bg-surface-interactive hover:text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">monitor_heart</span> Jobs
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-sidebar-link text-sidebar-link text-text-muted hover:bg-surface-interactive hover:text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">chat</span> WhatsApp
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-sidebar-link text-sidebar-link text-text-muted hover:bg-surface-interactive hover:text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">mail</span> Email
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-sidebar-link text-sidebar-link text-text-muted hover:bg-surface-interactive hover:text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">analytics</span> Health
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-subtle space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">account_circle</span> Profile
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-sidebar-link text-sidebar-link text-text-muted hover:bg-surface-interactive hover:text-primary transition-colors duration-200 uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen">
+<!-- Top Bar -->
+<header class="sticky top-0 z-50 w-full h-[64px] glass-panel flex justify-between items-center px-content-padding border-b border-border-subtle">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-text-dim">
+<span class="material-symbols-outlined text-sm">search</span>
+</span>
+<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-sm w-64 focus:ring-1 focus:ring-primary placeholder:text-text-muted" placeholder="Search profile settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-text-dim hover:text-primary transition-opacity relative">
+<span class="material-symbols-outlined">schedule</span>
+</button>
+<button class="text-text-dim hover:text-primary transition-opacity relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full glow-pulse"></span>
+</button>
+</div>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a senior system administrator in a high-tech dark mode setting. The lighting is Moody with indigo and violet hues reflecting off a glass background. The aesthetic is clean, sharp, and embodies a premium SaaS user persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0nQdfWPyTCUT0cGAiqxYbkyR668BzD4w9orxOXCgWV_R5TBtIxUdogBDiQnzBrlFviBQY3ohQAFIBWbFDah3IvGf6nrn5B5lZcbAsIK9vcbwkja-msWzCZhBhMe-6bhIQ6TEyeHOoi0UKRU3QL5bKPOeZ-Ltf54GxZThDXwHDUuMAPzDdUKkRXgxr-_FlHDM37j95sXV9-WKLlx6T39aqBW-7SDPsYxG_BBWlrmJuVsplpUGtHXrbMv_-iblJQo5E2awkCJm5lGK1"/>
+</div>
+</div>
+</header>
+<div class="p-content-padding max-w-[1400px] mx-auto">
+<!-- Page Header -->
+<div class="mb-10">
+<h1 class="font-h1 text-h1 text-text-primary mb-2">Profile</h1>
+<p class="font-body-lg text-text-dim max-w-2xl">Manage your account settings, security, and display preferences.</p>
+</div>
+<!-- Email Verification Warning -->
+<div class="mb-8 p-4 glass-panel rounded-xl border-l-4 border-warning flex items-center justify-between animate-in fade-in slide-in-from-top-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<h4 class="font-h2 text-h2 text-text-primary">Email not verified</h4>
+<p class="text-body-sm text-text-dim">Verify your email to access all security features.</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-warning/10 text-warning hover:bg-warning/20 rounded-lg font-body-sm font-bold transition-all">
+                    Resend Link
+                </button>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-grid-gap">
+<!-- Account Info Card (Column 1-5) -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-grid-gap">
+<section class="glass-panel rounded-xl p-card-padding relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-label-caps text-label-caps text-text-muted uppercase">Account Info</h3>
+<span class="material-symbols-outlined text-text-dim">verified_user</span>
+</div>
+<div class="space-y-5 relative z-10">
+<div>
+<label class="block text-text-muted text-[10px] uppercase font-bold tracking-widest mb-1">User ID</label>
+<div class="font-mono-technical text-mono-technical text-primary flex items-center gap-2">
+                                    USR-9921-X4B <span class="material-symbols-outlined text-sm cursor-pointer hover:text-white transition-colors">content_copy</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<label class="block text-text-muted text-[10px] uppercase font-bold tracking-widest mb-1">Email Address</label>
+<div class="font-body-sm text-text-primary">alex.dev@webguard.pro</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-bold border border-success/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    VERIFIED
+                                </span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-text-muted text-[10px] uppercase font-bold tracking-widest mb-1">Role</label>
+<div class="font-body-sm text-text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">shield_person</span>
+                                        Admin
+                                    </div>
+</div>
+<div>
+<label class="block text-text-muted text-[10px] uppercase font-bold tracking-widest mb-1">Member Since</label>
+<div class="font-body-sm text-text-primary">Oct 12, 2023</div>
+</div>
+</div>
+<div>
+<label class="block text-text-muted text-[10px] uppercase font-bold tracking-widest mb-1">Last Login IP</label>
+<div class="font-mono-technical text-mono-technical text-text-dim">192.168.1.104</div>
+</div>
+</div>
+<!-- Decorative SVG bg -->
+<svg class="absolute -right-4 -bottom-4 opacity-[0.03] text-primary" height="160" viewbox="0 0 100 100" width="160">
+<circle cx="50" cy="50" fill="currentColor" r="40"></circle>
+<circle cx="80" cy="80" fill="currentColor" r="30"></circle>
+</svg>
+</section>
+<!-- Logout Action -->
+<section class="glass-panel rounded-xl p-card-padding">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="font-h2 text-h2 text-text-primary">End Current Session</h4>
+<p class="text-body-sm text-text-dim">You will be logged out of this device.</p>
+</div>
+<button class="px-6 py-2.5 border border-danger/30 text-danger hover:bg-danger/10 rounded-lg font-body-sm font-bold transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">logout</span> Logout
+                            </button>
+</div>
+</section>
+</div>
+<!-- Profile Update Column (Column 6-12) -->
+<div class="col-span-12 lg:col-span-7 flex flex-col gap-grid-gap">
+<!-- Display Name Form -->
+<section class="glass-panel rounded-xl p-card-padding">
+<h3 class="font-label-caps text-label-caps text-text-muted uppercase mb-6">Display Settings</h3>
+<form class="space-y-4">
+<div>
+<label class="block text-text-muted font-bold text-[10px] uppercase tracking-widest mb-2">Display Name</label>
+<div class="flex gap-4">
+<input class="flex-1 bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all" type="text" value="Alex Rivera"/>
+<button class="gradient-primary px-6 py-2.5 rounded-lg text-white font-bold text-body-sm hover:opacity-90 active:scale-[0.98] transition-all" type="submit">
+                                        Update Name
+                                    </button>
+</div>
+</div>
+</form>
+</section>
+<!-- Change Password Form -->
+<section class="glass-panel rounded-xl p-card-padding">
+<h3 class="font-label-caps text-label-caps text-text-muted uppercase mb-6">Security &amp; Password</h3>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="col-span-2">
+<label class="block text-text-muted font-bold text-[10px] uppercase tracking-widest mb-2">Current Password</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-text-primary focus:ring-1 focus:ring-primary transition-all" placeholder="••••••••••••" type="password"/>
+</div>
+<div>
+<label class="block text-text-muted font-bold text-[10px] uppercase tracking-widest mb-2">New Password</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-text-primary focus:ring-1 focus:ring-primary transition-all" type="password"/>
+</div>
+<div>
+<label class="block text-text-muted font-bold text-[10px] uppercase tracking-widest mb-2">Confirm New Password</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-text-primary focus:ring-1 focus:ring-primary transition-all" type="password"/>
+</div>
+</div>
+<div class="flex justify-end">
+<button class="gradient-primary px-8 py-3 rounded-lg text-white font-bold text-body-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(99,102,241,0.3)]" type="submit">
+                                    Update Password
+                                </button>
+</div>
+</form>
+</section>
+</div>
+<!-- Recent Login Activity (Full Width) -->
+<div class="col-span-12">
+<section class="glass-panel rounded-xl overflow-hidden">
+<div class="p-card-padding border-b border-border-subtle flex items-center justify-between">
+<div>
+<h3 class="font-h2 text-h2 text-text-primary">Recent Login Activity</h3>
+<p class="text-body-sm text-text-muted">Monitor your recent account access for suspicious patterns.</p>
+</div>
+<button class="text-primary font-bold text-body-sm hover:underline">Download Log</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-interactive border-b border-border-subtle">
+<tr>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link text-text-dim uppercase">Timestamp</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link text-text-dim uppercase">Status</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link text-text-dim uppercase">IP Address</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link text-text-dim uppercase">Device &amp; Browser</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link text-text-dim uppercase">Location</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-interactive transition-colors">
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-primary">2023-11-24 14:22:10</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-success font-bold text-[11px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-success glow-pulse"></span>
+                                                Success
+                                            </span>
+</td>
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-dim">192.168.1.104</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">Chrome 119 on macOS Sonoma</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">San Francisco, CA</td>
+</tr>
+<tr class="hover:bg-surface-interactive transition-colors">
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-primary">2023-11-24 09:15:32</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-success font-bold text-[11px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                                Success
+                                            </span>
+</td>
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-dim">192.168.1.104</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">iOS App (WebGuard Mobile)</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">San Francisco, CA</td>
+</tr>
+<tr class="hover:bg-surface-interactive transition-colors">
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-primary">2023-11-23 21:04:01</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-danger font-bold text-[11px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-danger"></span>
+                                                Failed
+                                            </span>
+</td>
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-dim">45.33.12.98</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">Unknown Browser on Linux</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">Prague, CZ</td>
+</tr>
+<tr class="hover:bg-surface-interactive transition-colors">
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-primary">2023-11-23 08:45:19</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-success font-bold text-[11px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                                                Success
+                                            </span>
+</td>
+<td class="px-6 py-4 font-mono-technical text-mono-technical text-text-dim">192.168.1.104</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">Chrome 119 on macOS Sonoma</td>
+<td class="px-6 py-4 text-body-sm text-text-muted">San Francisco, CA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and atmospheric logic
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Search highlight effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-1', 'ring-primary/50');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-1', 'ring-primary/50');
+        });
+    </script>
+</body></html>

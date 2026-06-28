@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WebGuard Pro | Monitoring Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-topbar {
+            backdrop-filter: blur(16px) saturate(140%);
+            background: rgba(15, 17, 32, 0.7);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .glow-pulse {
+            box-shadow: 0 0 0 0 rgba(192, 193, 255, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(192, 193, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(192, 193, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(192, 193, 255, 0); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#2f303a",
+                        "surface-container-high": "#282933",
+                        "surface-dim": "#12131c",
+                        "on-secondary": "#3c0091",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-container": "#8083ff",
+                        "border-subtle": "rgba(255, 255, 255, 0.06)",
+                        "on-tertiary-container": "#000703",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "secondary-fixed": "#e9ddff",
+                        "on-primary-fixed": "#07006c",
+                        "on-primary": "#1000a9",
+                        "success": "#10b981",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#383843",
+                        "tertiary-container": "#00885d",
+                        "on-primary-container": "#0d0096",
+                        "outline": "#908fa0",
+                        "warning": "#f59e0b",
+                        "primary": "#c0c1ff",
+                        "on-error": "#690005",
+                        "on-tertiary": "#003824",
+                        "on-surface": "#e3e1ef",
+                        "secondary-container": "#571bc1",
+                        "on-tertiary-fixed": "#002113",
+                        "border-bold": "rgba(255, 255, 255, 0.1)",
+                        "text-muted": "#7b8095",
+                        "surface": "#0f1120",
+                        "inverse-primary": "#494bd6",
+                        "surface-interactive": "#1c1f30",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-surface-variant": "#c7c4d7",
+                        "secondary": "#d0bcff",
+                        "outline-variant": "#464554",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-container-highest": "#33343e",
+                        "surface-container-low": "#1a1b24",
+                        "text-dim": "#9ca0b3",
+                        "surface-tint": "#c0c1ff",
+                        "on-secondary-container": "#c4abff",
+                        "error-container": "#93000a",
+                        "background": "#12131c",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "danger": "#f43f5e",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "tertiary": "#4edea3",
+                        "on-background": "#e3e1ef",
+                        "text-primary": "#e8eaf2",
+                        "inverse-surface": "#e3e1ef",
+                        "surface-container-lowest": "#0d0e17",
+                        "surface-container": "#1e1f29",
+                        "surface-variant": "#33343e",
+                        "on-error-container": "#ffdad6",
+                        "surface-elevated": "#161827"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit-tight": "4px",
+                        "content-padding": "28px",
+                        "card-padding": "24px",
+                        "form-gutter": "18px",
+                        "sidebar-width": "260px",
+                        "topbar-height": "64px",
+                        "unit-base": "8px",
+                        "grid-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "sidebar-link": ["DM Sans"],
+                        "label-caps": ["DM Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "body-lg": ["DM Sans"],
+                        "data-display": ["Plus Jakarta Sans"],
+                        "mono-technical": ["JetBrains Mono"],
+                        "body-sm": ["DM Sans"],
+                        "h2": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "sidebar-link": ["10px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["14px", {"lineHeight": "22px", "fontWeight": "500"}],
+                        "data-display": ["28px", {"lineHeight": "34px", "fontWeight": "800"}],
+                        "mono-technical": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h2": ["15px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary/30">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-border-subtle shadow-sm flex flex-col p-unit-base z-[60]">
+<div class="mb-8 px-4 py-6">
+<h1 class="font-h1 text-h1 bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</h1>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">Monitoring Suite</p>
+</div>
+<nav class="flex-1 space-y-1 px-2">
+<!-- Jobs (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-interactive rounded-lg transition-transform active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-sidebar-link text-sidebar-link">Jobs</span>
+</a>
+<!-- WhatsApp -->
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="font-sidebar-link text-sidebar-link">WhatsApp</span>
+</a>
+<!-- Email -->
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-sidebar-link text-sidebar-link">Email</span>
+</a>
+<!-- Health -->
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-sidebar-link text-sidebar-link">Health</span>
+</a>
+</nav>
+<div class="mt-auto px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-sidebar-link text-sidebar-link">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sidebar-link text-sidebar-link">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="ml-[260px] flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 w-full h-[64px] glass-topbar border-b border-border-subtle shadow-sm flex justify-between items-center px-content-padding">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-lg py-2 pl-10 pr-4 text-body-sm focus:outline-none focus:border-primary transition-all" placeholder="Search monitoring jobs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<h2 class="font-h2 text-h2 text-primary hidden lg:block">Monitor Dashboard</h2>
+<div class="flex items-center gap-4">
+<button class="text-text-dim hover:text-primary transition-opacity active:opacity-80">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="text-text-dim hover:text-primary transition-opacity active:opacity-80 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-8 rounded-full border border-border-bold overflow-hidden cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a professional technology executive with modern glasses, set against a dark background with subtle blue rim lighting to match the high-end SaaS aesthetic. The lighting is dramatic and crisp, emphasizing a sleek, authoritative persona consistent with a technical dashboard environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0zdRmXq8ggh1m41k62bfROXW6xEerQTukvgRagiybhGscK9JYwIBwFm53YFAbwYiTr-MNdJ_jkqeNIPHSfmh05PMZ3YdytIRrzEIoq7EKbNA_f5RC37cLluDoFP9DlLc8xQXrtsVO99pTcXgK-khF30NKC0RkF_3XZNf2oU1D25s0B6K3HhXOD4-NRlC4I4kILVSVzYjNhXchiZcby_tQPcejMGNKFHq2E2mjgEcQ7LZY6xRDL07Dbd1C0SH-0-Cj43NmatZwBAsD"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 p-content-padding max-w-[1400px]">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8 animate-fade-in-up" style="animation-delay: 0.1s">
+<div>
+<h2 class="font-h1 text-h1 text-text-primary">Monitoring Jobs</h2>
+<p class="font-body-sm text-body-sm text-text-dim mt-1">Manage and track your automated website health checks.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-secondary text-on-primary-fixed px-6 py-2.5 rounded-lg font-bold text-body-sm flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(192,193,255,0.3)]">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                    New Job
+                </button>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-grid-gap mb-8">
+<!-- Total -->
+<div class="bg-surface border border-border-subtle rounded-xl p-card-padding relative overflow-hidden group animate-fade-in-up" style="animation-delay: 0.2s">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="relative z-10">
+<span class="font-label-caps text-label-caps text-text-dim block mb-2">TOTAL JOBS</span>
+<h3 class="font-data-display text-data-display text-text-primary">124</h3>
+</div>
+<!-- Decorative SVG Pattern -->
+<svg class="absolute right-[-20px] bottom-[-20px] opacity-[0.03] text-primary group-hover:scale-110 transition-transform duration-500" height="120" viewbox="0 0 100 100" width="120">
+<circle cx="50" cy="50" fill="currentColor" r="40"></circle>
+<circle cx="80" cy="80" fill="currentColor" r="30"></circle>
+</svg>
+</div>
+<!-- Active -->
+<div class="bg-surface border border-border-subtle rounded-xl p-card-padding relative overflow-hidden group animate-fade-in-up" style="animation-delay: 0.3s">
+<div class="absolute top-0 left-0 w-1 h-full bg-success"></div>
+<div class="relative z-10">
+<span class="font-label-caps text-label-caps text-text-dim block mb-2">ACTIVE SESSIONS</span>
+<h3 class="font-data-display text-data-display text-text-primary">82</h3>
+</div>
+<svg class="absolute right-[-20px] bottom-[-20px] opacity-[0.03] text-success group-hover:scale-110 transition-transform duration-500" height="120" viewbox="0 0 100 100" width="120">
+<rect fill="currentColor" height="60" width="60" x="20" y="20"></rect>
+<rect fill="currentColor" height="40" width="40" x="50" y="50"></rect>
+</svg>
+</div>
+<!-- Paused -->
+<div class="bg-surface border border-border-subtle rounded-xl p-card-padding relative overflow-hidden group animate-fade-in-up" style="animation-delay: 0.4s">
+<div class="absolute top-0 left-0 w-1 h-full bg-warning"></div>
+<div class="relative z-10">
+<span class="font-label-caps text-label-caps text-text-dim block mb-2">PAUSED JOBS</span>
+<h3 class="font-data-display text-data-display text-text-primary">31</h3>
+</div>
+<svg class="absolute right-[-20px] bottom-[-20px] opacity-[0.03] text-warning group-hover:scale-110 transition-transform duration-500" height="120" viewbox="0 0 100 100" width="120">
+<polygon fill="currentColor" points="50,10 90,90 10,90"></polygon>
+</svg>
+</div>
+<!-- Failed -->
+<div class="bg-surface border border-border-subtle rounded-xl p-card-padding relative overflow-hidden group animate-fade-in-up" style="animation-delay: 0.5s">
+<div class="absolute top-0 left-0 w-1 h-full bg-danger"></div>
+<div class="relative z-10">
+<span class="font-label-caps text-label-caps text-text-dim block mb-2">FAILED ALERTS</span>
+<h3 class="font-data-display text-data-display text-text-primary">11</h3>
+</div>
+<svg class="absolute right-[-20px] bottom-[-20px] opacity-[0.03] text-danger group-hover:scale-110 transition-transform duration-500" height="120" viewbox="0 0 100 100" width="120">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="10"></circle>
+<line stroke="currentColor" stroke-width="10" x1="20" x2="80" y1="20" y2="80"></line>
+</svg>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6 animate-fade-in-up" style="animation-delay: 0.6s">
+<div class="flex items-center bg-surface-container rounded-lg p-1">
+<button class="px-4 py-1.5 text-body-sm font-bold bg-surface-interactive text-primary rounded-md transition-all">All Jobs</button>
+<button class="px-4 py-1.5 text-body-sm font-medium text-text-dim hover:text-text-primary transition-all">Running</button>
+<button class="px-4 py-1.5 text-body-sm font-medium text-text-dim hover:text-text-primary transition-all">Drafts</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-high border border-border-subtle px-4 py-2 rounded-lg text-body-sm font-medium text-text-primary flex items-center gap-2 hover:bg-surface-interactive transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                        Filters
+                    </button>
+<button class="bg-surface-container-high border border-border-subtle px-4 py-2 rounded-lg text-body-sm font-medium text-text-primary flex items-center gap-2 hover:bg-surface-interactive transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+                        Latest First
+                    </button>
+</div>
+</div>
+<!-- Job Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-grid-gap">
+<!-- Job Card 1 -->
+<div class="bg-surface border border-border-subtle rounded-xl overflow-hidden flex flex-col group animate-fade-in-up shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style="animation-delay: 0.7s">
+<div class="relative aspect-video w-full overflow-hidden border-b border-border-subtle">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="High-resolution website preview screenshot of a complex enterprise e-commerce homepage with vibrant purple and deep blue accents. The visual style is crisp and modern, featuring multiple data charts and product displays, reflecting a high-performance digital environment. The mood is professional and technologically advanced, with soft ambient light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT9CfzWPqcSpFGaE8RXxyW-I4fmPUmRdj5Id-vNqXGsQ6blLZt9kbe1jY_pQS6zxInIiQXjRO7yEBf4plY8DfJfuCyoVAcfljq6COs6GoVf2mclb_bo4Ec9hfGD3SAzWea5NzA2mbXH2cvNDXyNKwFC-u6jnNBnl54UYblF6Vwmao5eafHLfUoW9PmCL7Aqd6kcVavn34bfMHlwMLP4BpZV7TA9k1ph3uP2j5XHPs_Bz7wJ24HHyWepb6oiYYGWoKpjJ-n4J7LLudr"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full text-label-caps text-success flex items-center gap-1.5 border border-success/20">
+<span class="w-1.5 h-1.5 rounded-full bg-success glow-pulse"></span>
+                                Healthy
+                            </span>
+</div>
+</div>
+<div class="p-card-padding flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h2 text-h2 text-text-primary">Stripe Checkout API</h4>
+<span class="text-text-dim text-[12px] font-mono-technical">ID: #WG-9921</span>
+</div>
+<p class="font-mono-technical text-body-sm text-primary truncate mb-6">https://checkout.stripe.com/v3/pay/session...</p>
+<div class="flex items-center justify-between pt-4 border-t border-border-subtle mt-auto">
+<div class="flex items-center gap-1 text-text-dim">
+<span class="material-symbols-outlined text-[16px]" data-icon="update">update</span>
+<span class="text-[12px] font-medium">Checked 2m ago</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all" title="Run Now">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all" title="History">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all" title="Edit">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Job Card 2 -->
+<div class="bg-surface border border-border-subtle rounded-xl overflow-hidden flex flex-col group animate-fade-in-up shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style="animation-delay: 0.8s">
+<div class="relative aspect-video w-full overflow-hidden border-b border-border-subtle">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Sleek screenshot of a minimalist portfolio website showcasing professional photography in a grid. The website utilizes a dark mode interface with deep gray backgrounds and white typography. Soft, diffused lighting effects around the UI elements emphasize the luxury SaaS theme, while the technical monitoring overlay shows data points in a high-tech midnight indigo color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBheJ-xObYX327Q0jVIJ1zVXZtZ1RVnF0SJY534sUy6mpis5O9vkdY0trrGcojmLuV2huAy3tRlecz8wPo3xu92DRfqDsexpufA608KB45H5dzlxqjWGVrPkWtIbyvj5N0UxDOGSGvGQkbIQGQ6irNqhfUAMuRSjZLhQ-T8L47-qEUlKvcTLo0l5hsZjoHIFlKc1HSH0-3FniwSRG2sb81IyJaRgNwAhnB5j3IGbi6quymrgQ8VkI3aIwwvzecLqqGX0-XK9oZgaFf_"/>
+<div class="absolute top-3 left-3">
+<span class="bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full text-label-caps text-warning flex items-center gap-1.5 border border-warning/20">
+<span class="material-symbols-outlined text-[14px]" data-icon="pause">pause</span>
+                                Paused
+                            </span>
+</div>
+</div>
+<div class="p-card-padding flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h2 text-h2 text-text-primary">Global CDN Status</h4>
+<span class="text-text-dim text-[12px] font-mono-technical">ID: #WG-4412</span>
+</div>
+<p class="font-mono-technical text-body-sm text-primary truncate mb-6">https://cdn.edge-gateway.io/status/metrics</p>
+<div class="flex items-center justify-between pt-4 border-t border-border-subtle mt-auto">
+<div class="flex items-center gap-1 text-text-dim">
+<span class="material-symbols-outlined text-[16px]" data-icon="event">event</span>
+<span class="text-[12px] font-medium">Last run: 4h ago</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Job Card 3 -->
+<div class="bg-surface border border-border-subtle rounded-xl overflow-hidden flex flex-col group animate-fade-in-up shadow-sm hover:shadow-lg transition-all hover:-translate-y-1" style="animation-delay: 0.9s">
+<div class="relative aspect-video w-full overflow-hidden border-b border-border-subtle">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Visual rendering of a high-tech dashboard displaying real-time security threats across a global map. The map uses neon blue and violet outlines against a charcoal background. The mood is tense and analytical, featuring data-driven aesthetic elements like glowing signal pulses and sharp technical typography, aligning with a premium cybersecurity monitoring application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgL3bWGR0e4JcxczyVCbJS3OMg2B1xhUsxia8wNnc_AKa8ctLCcpZbqCbbsRHTsWluLemwxFv3a8ukQvfrFgk0ccs0lq4yb75kF_JFHi2-N2P_2dN6qT51IK3WRynxJQcCGNT2OT21h5LdjaFxfaLzm8ulYo7gAHPLcoOmAS4sY04PIc4Rwk6ZsNjhIdhvVvrzxCxaSYptQSxhQdmKtjV7OwTaq4cP7AqigXQXZr-yZh8t73BGDR8wLTCHSCZDvRqBr0MOKaxRKoFh"/>
+<div class="absolute top-3 left-3">
+<span class="bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full text-label-caps text-danger flex items-center gap-1.5 border border-danger/20">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+                                Failed
+                            </span>
+</div>
+</div>
+<div class="p-card-padding flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-h2 text-h2 text-text-primary">Auth0 Gateway 01</h4>
+<span class="text-text-dim text-[12px] font-mono-technical">ID: #WG-1033</span>
+</div>
+<p class="font-mono-technical text-body-sm text-primary truncate mb-6">https://auth.enterprise.app/oauth/v2/token</p>
+<div class="flex items-center justify-between pt-4 border-t border-border-subtle mt-auto">
+<div class="flex items-center gap-1 text-danger font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="warning">warning</span>
+<span class="text-[12px]">Connection timeout</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="p-2 hover:bg-surface-interactive rounded-lg text-text-dim hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Subtle Footer gradient for depth -->
+<footer class="h-16 flex items-center px-content-padding border-t border-border-subtle/30 mt-12 bg-surface-container-lowest">
+<p class="font-body-sm text-body-sm text-text-muted">© 2024 WebGuard Pro Inc. All nodes operational.</p>
+</footer>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply staggered animations manually for extra control
+            const elements = document.querySelectorAll('.animate-fade-in-up');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${(index + 1) * 0.1}s`;
+            });
+
+            // Button click ripple effect simulation (scale down)
+            const buttons = document.querySelectorAll('button, a');
+            buttons.forEach(btn => {
+                btn.addEventListener('mousedown', () => btn.classList.add('scale-[0.97]'));
+                btn.addEventListener('mouseup', () => btn.classList.remove('scale-[0.97]'));
+                btn.addEventListener('mouseleave', () => btn.classList.remove('scale-[0.97]'));
+            });
+        });
+    </script>
+</body></html>

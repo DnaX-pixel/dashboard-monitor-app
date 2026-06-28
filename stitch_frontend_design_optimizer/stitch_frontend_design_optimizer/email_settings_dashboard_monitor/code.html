@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Settings | WebGuard Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 32, 0.7);
+            backdrop-filter: blur(16px) saturate(140%);
+        }
+        .status-glow {
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #8083ff 0%, #571bc1 100%);
+            transition: transform 0.1s ease-in-out;
+        }
+        .btn-gradient:active {
+            transform: scale(0.98);
+        }
+        .input-focus-ring:focus {
+            outline: none;
+            border-color: #c0c1ff;
+            box-shadow: 0 0 0 2px rgba(192, 193, 255, 0.2);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.95); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#c0c1ff",
+                      "border-bold": "rgba(255, 255, 255, 0.1)",
+                      "on-error": "#690005",
+                      "surface-variant": "#33343e",
+                      "on-surface-variant": "#c7c4d7",
+                      "error-container": "#93000a",
+                      "surface-container-low": "#1a1b24",
+                      "surface": "#0f1120",
+                      "tertiary-container": "#00885d",
+                      "text-primary": "#e8eaf2",
+                      "on-primary-container": "#0d0096",
+                      "on-secondary": "#3c0091",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "success": "#10b981",
+                      "primary-fixed": "#e1e0ff",
+                      "on-secondary-container": "#c4abff",
+                      "surface-container-highest": "#33343e",
+                      "surface-interactive": "#1c1f30",
+                      "outline": "#908fa0",
+                      "on-error-container": "#ffdad6",
+                      "border-subtle": "rgba(255, 255, 255, 0.06)",
+                      "on-tertiary-fixed": "#002113",
+                      "secondary-container": "#571bc1",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "text-dim": "#9ca0b3",
+                      "danger": "#f43f5e",
+                      "inverse-on-surface": "#2f303a",
+                      "secondary": "#d0bcff",
+                      "surface-tint": "#c0c1ff",
+                      "tertiary": "#4edea3",
+                      "error": "#ffb4ab",
+                      "surface-container-lowest": "#0d0e17",
+                      "on-tertiary-container": "#000703",
+                      "inverse-surface": "#e3e1ef",
+                      "inverse-primary": "#494bd6",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "tertiary-fixed": "#6ffbbe",
+                      "surface-dim": "#12131c",
+                      "secondary-fixed": "#e9ddff",
+                      "on-tertiary": "#003824",
+                      "surface-bright": "#383843",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-primary": "#1000a9",
+                      "on-background": "#e3e1ef",
+                      "on-primary-fixed": "#07006c",
+                      "outline-variant": "#464554",
+                      "on-secondary-fixed": "#23005c",
+                      "surface-container": "#1e1f29",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "background": "#12131c",
+                      "surface-container-high": "#282933",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "surface-elevated": "#161827",
+                      "on-surface": "#e3e1ef",
+                      "text-muted": "#7b8095",
+                      "primary-container": "#8083ff",
+                      "warning": "#f59e0b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "content-padding": "28px",
+                      "unit-tight": "4px",
+                      "grid-gap": "16px",
+                      "form-gutter": "18px",
+                      "unit-base": "8px",
+                      "card-padding": "24px",
+                      "sidebar-width": "260px",
+                      "topbar-height": "64px"
+              },
+              "fontFamily": {
+                      "h2": ["Plus Jakarta Sans"],
+                      "sidebar-link": ["DM Sans"],
+                      "mono-technical": ["JetBrains Mono"],
+                      "h1": ["Plus Jakarta Sans"],
+                      "data-display": ["Plus Jakarta Sans"],
+                      "body-lg": ["DM Sans"],
+                      "label-caps": ["DM Sans"],
+                      "body-sm": ["DM Sans"]
+              },
+              "fontSize": {
+                      "h2": ["15px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "sidebar-link": ["10px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "mono-technical": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "data-display": ["28px", {"lineHeight": "34px", "fontWeight": "800"}],
+                      "body-lg": ["14px", {"lineHeight": "22px", "fontWeight": "500"}],
+                      "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                      "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-primary min-h-screen font-body-sm flex overflow-hidden">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface border-r border-border-subtle shadow-sm flex flex-col p-unit-base z-50">
+<div class="mb-8 px-4 py-6">
+<span class="font-h1 text-h1 bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</span>
+<p class="font-body-sm text-body-sm text-text-muted mt-1">Monitoring Suite</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">monitor_heart</span>
+<span class="font-sidebar-link text-sidebar-link">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-sidebar-link text-sidebar-link">WhatsApp</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-interactive rounded-lg transition-transform scale-[0.98]" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-sidebar-link text-sidebar-link">Email</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-sidebar-link text-sidebar-link">Health</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-border-subtle pt-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-sidebar-link text-sidebar-link">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-sidebar-link text-sidebar-link">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[260px] flex flex-col h-screen overflow-y-auto">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-40 w-full h-[64px] bg-surface/70 backdrop-blur-md border-b border-border-subtle shadow-sm flex justify-between items-center px-content-padding">
+<h2 class="font-h2 text-h2 text-primary">Monitor Dashboard</h2>
+<div class="flex items-center gap-6">
+<div class="relative group hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface-container-low border border-border-subtle rounded-lg py-1.5 pl-10 pr-4 text-body-sm w-64 input-focus-ring" placeholder="Search parameters..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-text-dim">
+<button class="hover:text-primary transition-opacity opacity-80 active:opacity-100">
+<span class="material-symbols-outlined">schedule</span>
+</button>
+<button class="relative hover:text-primary transition-opacity opacity-80 active:opacity-100">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-danger rounded-full border border-surface"></span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-variant overflow-hidden border border-border-bold">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a technical system administrator, wearing a dark turtleneck against a dimly lit tech background with subtle violet accent lights. Cinematic lighting, shallow depth of field, high-end corporate photography style with cool tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLlybpSOfaIu6kGfsEm855qG1D4eQwXp8I9czS2tNUXMqDdl1NRsfctH678t1UYDH4tfrAji-JInQ_77FzpEs3V5__svkc8p5RKMaQb_S9jQ8GjD1WQ0Is2-3LUJIVWQ615l8_IfAj7LAsDqVVEpB6n7lXegL4fZprHnBTn1EnAU4jYXK0gD7UQ5dBvxmNXd3TsN0gQsKoavXCIPN0XL2iB0ze_JtlilTHFZMk6rw0W4yLwhoqMTLhq9K_Ur1_ocWQLQScPKH4jg7Z"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 p-content-padding max-w-[1400px] w-full mx-auto space-y-8">
+<!-- Page Header -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-h1 text-h1 text-text-primary mb-1">Email Settings</h1>
+<p class="text-text-muted font-body-lg">Configure your SMTP parameters to enable automated incident reports and system alerts.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 border border-border-subtle rounded-lg text-body-sm font-bold hover:bg-surface-interactive transition-colors">Documentation</button>
+</div>
+</section>
+<!-- Status Banner -->
+<div class="relative overflow-hidden rounded-xl border border-success/30 bg-success/5 p-6 flex items-center gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-success animate-pulse-subtle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2">
+<h3 class="font-h2 text-success uppercase tracking-wider text-[11px]">System Status</h3>
+<span class="px-2 py-0.5 rounded-full bg-success text-on-tertiary-container text-[10px] font-bold status-glow">VERIFIED</span>
+</div>
+<p class="text-text-primary font-body-sm mt-1">SMTP Connection established with <span class="font-mono-technical text-primary">smtp.gmail.com</span></p>
+<p class="text-text-muted text-[12px]">Last ping: <span class="font-mono-technical">2 minutes ago</span></p>
+</div>
+<div class="hidden lg:block text-right">
+<p class="text-[11px] font-label-caps text-text-muted uppercase mb-1">Active User</p>
+<p class="font-mono-technical text-text-primary">alerts@webguard-pro.cloud</p>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-grid-gap">
+<!-- Settings Form Card -->
+<div class="lg:col-span-8 bg-surface border border-border-subtle rounded-xl overflow-hidden shadow-sm flex flex-col">
+<div class="p-6 border-b border-border-subtle bg-surface-container-low/50">
+<h3 class="font-h2 text-h2">Server Configuration</h3>
+<p class="text-text-muted text-[12px]">Standard SMTP settings for outgoing communications.</p>
+</div>
+<form class="p-6 space-y-form-gutter">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-form-gutter">
+<!-- Provider -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">Email Provider</label>
+<select class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all appearance-none cursor-pointer">
+<option>Gmail / Google Workspace</option>
+<option>Outlook / Office 365</option>
+<option>Amazon SES</option>
+<option>SendGrid</option>
+<option>Custom SMTP</option>
+</select>
+</div>
+<!-- Host -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">SMTP Host</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary font-mono-technical input-focus-ring" type="text" value="smtp.gmail.com"/>
+</div>
+<!-- Port -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">Port</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary font-mono-technical input-focus-ring" type="number" value="587"/>
+</div>
+<!-- From Address -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">From Address</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary input-focus-ring" type="email" value="alerts@webguard-pro.cloud"/>
+</div>
+</div>
+<!-- Credentials -->
+<div class="pt-4 space-y-form-gutter border-t border-border-subtle">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-form-gutter">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">Username</label>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary input-focus-ring" placeholder="api_key or email" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-dim uppercase">Password</label>
+<div class="relative">
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg px-4 py-2.5 text-body-sm text-text-primary input-focus-ring" type="password" value="••••••••••••"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-text-dim hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Encryption -->
+<div class="flex items-center gap-3 py-2">
+<input checked="" class="w-4 h-4 rounded bg-surface-container border-border-subtle text-primary focus:ring-primary focus:ring-offset-background" id="tls_enabled" type="checkbox"/>
+<label class="text-body-sm text-text-primary select-none cursor-pointer" for="tls_enabled">Use TLS/SSL Encryption (Recommended)</label>
+</div>
+<!-- Action Row -->
+<div class="pt-6 flex flex-wrap gap-3 items-center justify-between">
+<div class="flex gap-3">
+<button class="px-6 py-2.5 btn-gradient rounded-lg text-on-primary-fixed text-body-sm font-bold shadow-lg shadow-primary/20" type="button">Save Configuration</button>
+<button class="px-6 py-2.5 border border-border-subtle rounded-lg text-text-primary text-body-sm font-bold hover:bg-surface-interactive transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+                                    Verify Connection
+                                </button>
+</div>
+<button class="px-6 py-2.5 text-danger hover:bg-danger/10 rounded-lg text-body-sm font-bold transition-colors" type="button">Remove</button>
+</div>
+</form>
+</div>
+<!-- Secondary Cards / Info -->
+<div class="lg:col-span-4 space-y-grid-gap">
+<!-- Helper Card -->
+<div class="bg-surface border border-border-subtle rounded-xl p-6 relative overflow-hidden group">
+<div class="relative z-10">
+<h4 class="font-h2 text-h2 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                                Configuration Tips
+                            </h4>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></span>
+<p class="text-text-muted text-[13px]">For Gmail, use <span class="text-text-primary font-mono-technical">App Passwords</span> if 2FA is enabled on your account.</p>
+</li>
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></span>
+<p class="text-text-muted text-[13px]">Recommended port for TLS is <span class="text-text-primary font-mono-technical">587</span>, while SSL usually requires <span class="text-text-primary font-mono-technical">465</span>.</p>
+</li>
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></span>
+<p class="text-text-muted text-[13px]">Ensure your firewall allows outbound traffic on the selected SMTP port.</p>
+</li>
+</ul>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-8 -right-8 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]">alternate_email</span>
+</div>
+</div>
+<!-- Usage Stats Card -->
+<div class="bg-surface border border-border-subtle rounded-xl p-6 relative">
+<h4 class="font-label-caps text-label-caps text-text-dim uppercase mb-6">Delivery Performance</h4>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-body-sm text-text-primary">Delivery Success</span>
+<span class="text-body-sm font-bold text-success">99.8%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-success w-[99.8%] rounded-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-lg border border-border-subtle">
+<p class="font-label-caps text-label-caps text-text-dim uppercase">Emails Today</p>
+<p class="font-data-display text-[22px] text-text-primary mt-1">1,248</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border border-border-subtle">
+<p class="font-label-caps text-label-caps text-text-dim uppercase">Avg. Latency</p>
+<p class="font-data-display text-[22px] text-text-primary mt-1">420ms</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Accent Card -->
+<div class="bg-surface-elevated rounded-xl h-48 border border-border-subtle relative overflow-hidden flex items-center justify-center p-8 text-center">
+
+<div class="relative z-10">
+<p class="font-body-lg text-primary italic">"Reliable notification delivery is the backbone of incident response."</p>
+<p class="text-text-dim text-[11px] mt-2 font-label-caps">— Obsidian Flux Infrastructure</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Notification Toast (Hidden by default) -->
+<div class="fixed bottom-8 right-8 z-[100] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toast">
+<div class="bg-surface-container-highest border border-primary/30 p-4 rounded-lg shadow-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified</span>
+<div>
+<p class="text-body-sm font-bold text-text-primary">Settings Updated</p>
+<p class="text-[12px] text-text-muted">SMTP parameters saved successfully.</p>
+</div>
+</div>
+</div>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.textContent.trim() === "Save Configuration") {
+                    const toast = document.getElementById('toast');
+                    toast.classList.remove('translate-y-24', 'opacity-0');
+                    toast.classList.add('translate-y-0', 'opacity-100');
+                    
+                    setTimeout(() => {
+                        toast.classList.add('translate-y-24', 'opacity-0');
+                        toast.classList.remove('translate-y-0', 'opacity-100');
+                    }, 3000);
+                }
+            });
+        });
+
+        // Hover lift for cards
+        document.querySelectorAll('.bg-surface').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'transform 0.2s ease-out, box-shadow 0.2s ease-out';
+                card.style.boxShadow = '0 8px 24px rgba(0,0,0,.25)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 2px 8px rgba(0,0,0,.18)';
+            });
+        });
+    </script>
+</body></html>

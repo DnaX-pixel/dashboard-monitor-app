@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Compare Monitoring Runs | WebGuard Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 32, 0.7);
+            backdrop-filter: blur(16px) saturate(140%);
+        }
+        .status-glow-active {
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .diff-highlight-removed {
+            background-color: rgba(244, 63, 94, 0.15);
+            border-left: 2px solid #f43f5e;
+        }
+        .diff-highlight-added {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-left: 2px solid #10b981;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#c0c1ff",
+                        "border-bold": "rgba(255, 255, 255, 0.1)",
+                        "on-error": "#690005",
+                        "surface-variant": "#33343e",
+                        "on-surface-variant": "#c7c4d7",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1a1b24",
+                        "surface": "#0f1120",
+                        "tertiary-container": "#00885d",
+                        "text-primary": "#e8eaf2",
+                        "on-primary-container": "#0d0096",
+                        "on-secondary": "#3c0091",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "success": "#10b981",
+                        "primary-fixed": "#e1e0ff",
+                        "on-secondary-container": "#c4abff",
+                        "surface-container-highest": "#33343e",
+                        "surface-interactive": "#1c1f30",
+                        "outline": "#908fa0",
+                        "on-error-container": "#ffdad6",
+                        "border-subtle": "rgba(255, 255, 255, 0.06)",
+                        "on-tertiary-fixed": "#002113",
+                        "secondary-container": "#571bc1",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "text-dim": "#9ca0b3",
+                        "danger": "#f43f5e",
+                        "inverse-on-surface": "#2f303a",
+                        "secondary": "#d0bcff",
+                        "surface-tint": "#c0c1ff",
+                        "tertiary": "#4edea3",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0d0e17",
+                        "on-tertiary-container": "#000703",
+                        "inverse-surface": "#e3e1ef",
+                        "inverse-primary": "#494bd6",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-dim": "#12131c",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary": "#003824",
+                        "surface-bright": "#383843",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-primary": "#1000a9",
+                        "on-background": "#e3e1ef",
+                        "on-primary-fixed": "#07006c",
+                        "outline-variant": "#464554",
+                        "on-secondary-fixed": "#23005c",
+                        "surface-container": "#1e1f29",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "background": "#12131c",
+                        "surface-container-high": "#282933",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-elevated": "#161827",
+                        "on-surface": "#e3e1ef",
+                        "text-muted": "#7b8095",
+                        "primary-container": "#8083ff",
+                        "warning": "#f59e0b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "content-padding": "28px",
+                        "unit-tight": "4px",
+                        "grid-gap": "16px",
+                        "form-gutter": "18px",
+                        "unit-base": "8px",
+                        "card-padding": "24px",
+                        "sidebar-width": "260px",
+                        "topbar-height": "64px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Plus Jakarta Sans"],
+                        "sidebar-link": ["DM Sans"],
+                        "mono-technical": ["JetBrains Mono"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "data-display": ["Plus Jakarta Sans"],
+                        "body-lg": ["DM Sans"],
+                        "label-caps": ["DM Sans"],
+                        "body-sm": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "h2": ["15px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "sidebar-link": ["10px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "mono-technical": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "data-display": ["28px", {"lineHeight": "34px", "fontWeight": "800"}],
+                        "body-lg": ["14px", {"lineHeight": "22px", "fontWeight": "500"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                        "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-text-primary selection:bg-primary/30 font-body-sm">
+<!-- Sidebar (As specified in JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface flex flex-col p-unit-base border-r border-border-subtle shadow-sm z-40">
+<div class="mb-10 px-4 pt-4">
+<h1 class="font-h1 text-h1 bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">WebGuard Pro</h1>
+<p class="font-body-sm text-body-sm text-text-muted">Monitoring Suite</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold bg-surface-interactive rounded-lg scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-sidebar-link text-sidebar-link">JOBS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="font-sidebar-link text-sidebar-link">WHATSAPP</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-sidebar-link text-sidebar-link">EMAIL</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-sidebar-link text-sidebar-link">HEALTH</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-border-subtle space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-sidebar-link text-sidebar-link uppercase">Profile</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-muted font-medium hover:bg-surface-interactive hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-sidebar-link text-sidebar-link uppercase">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<div class="ml-[260px] min-h-screen flex flex-col">
+<!-- TopAppBar (As specified in JSON) -->
+<header class="sticky top-0 z-50 w-full h-[64px] bg-surface/70 backdrop-blur-md flex justify-between items-center px-content-padding border-b border-border-subtle shadow-sm">
+<div class="flex items-center gap-4">
+<h2 class="font-h2 text-h2 text-primary">Monitor Dashboard</h2>
+<div class="h-6 w-px bg-border-subtle mx-2"></div>
+<div class="flex items-center bg-surface-container-low border border-border-subtle rounded-lg px-3 py-1.5 w-64">
+<span class="material-symbols-outlined text-text-dim text-[18px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full placeholder:text-text-muted" placeholder="Search monitoring logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="text-text-dim hover:text-primary transition-opacity opacity-80 active:opacity-100">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="relative text-text-dim hover:text-primary transition-opacity opacity-80 active:opacity-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-danger rounded-full border border-surface"></span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden border border-border-bold">
+<img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a technical system administrator, soft studio lighting with a subtle blue and purple atmospheric glow in the background, sharp focus, digital corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVHlQGJDtdhYohKfRuk01PItclT6tLZfm8m-aH2DUfFZ94Bd_7LpeGejRddtgcR1-D-7t9pWIwT4XWOS78-w16eGHM1L8sdgWA_Q_G5jbcTTbX-xi5mZdJQOl6nSZ2yzH0sOMLtkW208nxcogzHVf24_RnMzHVGU0otwQ1WBraCWBeUg16hpIRmditQphMWMGUM5lSnoQ36PSGU_XCXHI-0UsgkFffSkkGg73lgEkRNuVqnyfFo_LJL83FMOEfmi1B4ClLFGiQzhRW"/>
+</div>
+</div>
+</header>
+<main class="flex-1 p-content-padding max-w-[1400px] mx-auto w-full">
+<!-- Page Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="compare_arrows">compare_arrows</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">Run Comparison</span>
+</div>
+<h3 class="font-h1 text-h1 mb-1">Compare: Stripe Checkout API</h3>
+<p class="font-mono-technical text-mono-technical text-text-dim">https://checkout.stripe.com/pay/cs_live_a1b2c3d4e5f6g7h8i9j0</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container border border-border-subtle rounded-lg font-body-sm text-text-primary hover:bg-surface-interactive transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                        Export Report
+                    </button>
+<button class="px-4 py-2 bg-gradient-to-br from-primary to-secondary text-on-primary-container rounded-lg font-body-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Rerun Comparison
+                    </button>
+</div>
+</div>
+<!-- Run Selectors Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-grid-gap mb-10">
+<div class="bg-surface p-card-padding rounded-xl border border-border-subtle shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]" data-icon="history">history</span>
+</div>
+<div class="flex flex-col gap-4 relative z-10">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-dim uppercase">Baseline Run (B)</span>
+<span class="bg-surface-container-high text-text-muted px-2 py-0.5 rounded text-[10px] font-bold">OLDER</span>
+</div>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-4 py-3 text-body-lg appearance-none focus:ring-primary focus:border-primary transition-all">
+<option>Oct 24, 2023 - 14:30:05 (ID: #88219)</option>
+<option>Oct 20, 2023 - 09:12:44 (ID: #87552)</option>
+<option>Oct 15, 2023 - 18:00:12 (ID: #86440)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<div class="bg-surface p-card-padding rounded-xl border border-border-subtle shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]" data-icon="bolt">bolt</span>
+</div>
+<div class="flex flex-col gap-4 relative z-10">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary uppercase">Latest Run (A)</span>
+<span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] font-bold">NEWER</span>
+</div>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-primary/30 rounded-lg px-4 py-3 text-body-lg appearance-none focus:ring-primary focus:border-primary transition-all">
+<option>Oct 25, 2023 - 12:45:10 (ID: #88432)</option>
+<option selected="">Oct 25, 2023 - 10:15:22 (ID: #88431)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Side-by-Side Visual Comparison -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-grid-gap mb-12">
+<!-- Screenshot B (Old) -->
+<div class="group">
+<div class="flex items-center justify-between mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-text-muted"></span>
+<span class="font-h2 text-h2 text-text-muted uppercase">Run B</span>
+</div>
+<span class="text-body-sm text-text-dim">Captured: 10/24 14:30</span>
+</div>
+<div class="relative bg-surface rounded-xl border border-border-subtle overflow-hidden transition-all group-hover:shadow-lg group-hover:-translate-y-1 aspect-[16/10]">
+<img class="w-full h-full object-cover" data-alt="A high-fidelity dashboard screenshot showing a classic Stripe checkout form with credit card inputs, dark theme UI, crisp typography, and rounded input fields on a clean midnight blue background. The lighting is digital and flat with high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5q1Z6yBhoww2cgChePBDxtBt3YhbUPQmDTQFnrEBZ8mYLQCTvFSZ67_rr_eccRgkKSdDA3YSESf6blzN-wEuVg4aSMR8DgmCRkom3C4TKtGLEOmVtPOQt8_Xpg0hKsuprPsMwNTq9mMGRlKj00Zz8SEXEXEeIB9x7FztAkXd4rlvzDhWdMSvQFCbqUaDv7OWLdmr1-Lnnn0zlaIwLQSqxfVgG569T7rELnCNzPf2vnMruLsLf018OmmjsO0-QkPRmEaWFyDtzsMir"/>
+<div class="absolute top-4 left-4">
+<div class="bg-surface-elevated/80 backdrop-blur-md px-3 py-1 rounded-full border border-border-subtle flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-text-muted"></span>
+<span class="text-[11px] font-bold text-text-primary tracking-wider uppercase">Baseline</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Screenshot A (New) -->
+<div class="group">
+<div class="flex items-center justify-between mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-warning status-glow-active"></span>
+<span class="font-h2 text-h2 text-warning uppercase">Run A</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-body-sm text-text-dim">Captured: 10/25 10:15</span>
+</div>
+</div>
+<div class="relative bg-surface rounded-xl border border-warning/30 overflow-hidden transition-all group-hover:shadow-lg group-hover:-translate-y-1 aspect-[16/10]">
+<img class="w-full h-full object-cover" data-alt="A high-fidelity dashboard screenshot showing an updated version of a Stripe checkout form where the payment button has changed from blue to a vibrant purple gradient. The UI is dark themed with luminous accents and crisp technical data overlays. A red border highlight indicates where a text change occurred near the card holder name field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAcG0k_2hfg4C5kzqrFymHcP306p76gZVJl21GXbE7yjhh5ZUlIQoMeNUBf2q0XxXw072oontD_Rtm43DSoDNTV7FrwO7DatlksmZkSloQSyWsbra1MzbjKRmQ8ZN30uXdi6Qplj0Jndwg58AuhgA1JiCl8tjBPiK6T18TKsdoRnq3UtZV2mQ-VWhS_LGAP_KXv-g_UQC7kKtcNESvWrABz_ecvyS8xYYQ-AzGO1_PJopKGc37DZYgA4YMW8QSM4eIuuH75DVh-Xd1"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<div class="bg-warning/20 backdrop-blur-md px-3 py-1 rounded-full border border-warning/40 flex items-center gap-2">
+<span class="material-symbols-outlined text-warning text-[14px]" data-icon="difference">difference</span>
+<span class="text-[11px] font-bold text-warning tracking-wider uppercase">Changed</span>
+</div>
+<div class="bg-primary/20 backdrop-blur-md px-3 py-1 rounded-full border border-primary/40 flex items-center gap-2">
+<span class="text-[11px] font-bold text-primary tracking-wider uppercase">84% Similarity</span>
+</div>
+</div>
+<!-- Diff Overlay Simulation -->
+<div class="absolute inset-0 border-[3px] border-warning/40 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+</div>
+</div>
+<!-- OCR Text Comparison Section -->
+<div class="bg-surface rounded-xl border border-border-subtle shadow-sm overflow-hidden mb-12">
+<div class="bg-surface-interactive px-content-padding py-4 border-b border-border-subtle flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="rebase_edit">rebase_edit</span>
+<h4 class="font-h2 text-h2">OCR Text Diff Analysis</h4>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-danger/20 border border-danger/40 rounded-sm"></span>
+<span class="text-[11px] font-medium text-text-dim">Removed</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-success/20 border border-success/40 rounded-sm"></span>
+<span class="text-[11px] font-medium text-text-dim">Added</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 divide-x divide-border-subtle">
+<!-- Text B Column -->
+<div class="p-6 overflow-x-auto scrollbar-hide">
+<div class="mb-4 flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-dim uppercase">Extracted Text (Run B)</span>
+<button class="text-text-muted hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<div class="font-mono-technical text-mono-technical space-y-1">
+<div class="px-2 py-1"># Checkout Session cs_live_88219</div>
+<div class="px-2 py-1">Customer: john.doe@example.com</div>
+<div class="px-2 py-1">Amount: $129.00 USD</div>
+<div class="px-2 py-1 diff-highlight-removed text-danger">Payment Method: Credit Card (Legacy)</div>
+<div class="px-2 py-1">Status: Pending Verification</div>
+<div class="px-2 py-1">Created: 2023-10-24 14:30:05</div>
+<div class="px-2 py-1">...</div>
+<div class="px-2 py-1">Footer: (c) 2023 Stripe Inc.</div>
+</div>
+</div>
+<!-- Text A Column -->
+<div class="p-6 overflow-x-auto scrollbar-hide">
+<div class="mb-4 flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary uppercase">Extracted Text (Run A)</span>
+<button class="text-text-muted hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<div class="font-mono-technical text-mono-technical space-y-1">
+<div class="px-2 py-1"># Checkout Session cs_live_88431</div>
+<div class="px-2 py-1">Customer: john.doe@example.com</div>
+<div class="px-2 py-1">Amount: $129.00 USD</div>
+<div class="px-2 py-1 diff-highlight-added text-success">Payment Method: Apple Pay / Card</div>
+<div class="px-2 py-1">Status: Pending Verification</div>
+<div class="px-2 py-1">Created: 2023-10-25 10:15:22</div>
+<div class="px-2 py-1">...</div>
+<div class="px-2 py-1">Footer: (c) 2023 Stripe Inc.</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Log Table -->
+<div class="mb-8">
+<h4 class="font-h2 text-h2 mb-4 px-1">Interaction Step Log</h4>
+<div class="bg-surface rounded-xl border border-border-subtle overflow-hidden">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-interactive border-b border-border-subtle">
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link uppercase text-text-dim">Step ID</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link uppercase text-text-dim">Action</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link uppercase text-text-dim">Duration (B)</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link uppercase text-text-dim">Duration (A)</th>
+<th class="px-6 py-4 font-sidebar-link text-sidebar-link uppercase text-text-dim text-right">Drift</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-interactive transition-colors group">
+<td class="px-6 py-4 font-mono-technical">001_NAVIGATE</td>
+<td class="px-6 py-4">URL Navigation</td>
+<td class="px-6 py-4 text-text-muted">1.24s</td>
+<td class="px-6 py-4">1.28s</td>
+<td class="px-6 py-4 text-right font-bold text-warning">+4.2%</td>
+</tr>
+<tr class="hover:bg-surface-interactive transition-colors group">
+<td class="px-6 py-4 font-mono-technical">002_WAIT_FOR</td>
+<td class="px-6 py-4">Selector: #checkout-form</td>
+<td class="px-6 py-4 text-text-muted">0.45s</td>
+<td class="px-6 py-4">0.44s</td>
+<td class="px-6 py-4 text-right font-bold text-success">-2.1%</td>
+</tr>
+<tr class="hover:bg-surface-interactive transition-colors group">
+<td class="px-6 py-4 font-mono-technical">003_CLICK_EL</td>
+<td class="px-6 py-4">Button: .payment-submit</td>
+<td class="px-6 py-4 text-text-muted">0.12s</td>
+<td class="px-6 py-4">0.15s</td>
+<td class="px-6 py-4 text-right font-bold text-warning">+25%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button for Support/Help -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-primary text-on-primary-container rounded-full shadow-[0_0_20px_rgba(192,193,255,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[28px]" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', () => {
+                // Mock loading state refresh
+                const main = document.querySelector('main');
+                main.style.opacity = '0.5';
+                setTimeout(() => {
+                    main.style.opacity = '1';
+                }, 300);
+            });
+        });
+
+        // Add scroll effect to TopAppBar
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

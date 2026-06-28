@@ -65,3 +65,6 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+
+# Accidental nested clone
+dashboard-monitor-app/

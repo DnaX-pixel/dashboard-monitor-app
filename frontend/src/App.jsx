@@ -1,20 +1,18 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './auth';
-import Sidebar     from './components/Sidebar';
-import Topbar      from './components/Topbar';
-import Login       from './pages/Login';
-import Dashboard   from './pages/Dashboard';
-import JobForm     from './pages/JobForm';
-import JobHistory  from './pages/JobHistory';
+import AppShell from './components/AppShell';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import JobForm from './pages/JobForm';
+import JobHistory from './pages/JobHistory';
 import CompareView from './pages/CompareView';
-import WhatsApp    from './pages/WhatsApp';
+import WhatsApp from './pages/WhatsApp';
 import EmailSettings from './pages/EmailSettings';
-import HealthCheck  from './pages/HealthCheck';
-import Profile     from './pages/Profile';
+import HealthCheck from './pages/HealthCheck';
+import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword  from './pages/ResetPassword';
-import VerifyEmail    from './pages/VerifyEmail';
+import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
 
 function PrivateRoute({ children }) {
   const { token } = useAuth();
@@ -38,21 +36,8 @@ function getPageTitle(pathname) {
   return 'Dashboard Monitor';
 }
 
-function Layout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
-  const title = getPageTitle(location.pathname);
-
-  return (
-    <div className="app-shell">
-      <div className={`sidebar-overlay ${sidebarOpen ? 'show' : ''}`} onClick={() => setSidebarOpen(false)} />
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="main-area">
-        <Topbar title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <div className="content-area animate-in">{children}</div>
-      </div>
-    </div>
-  );
+function Layout({ children, title }) {
+  return <AppShell title={title}>{children}</AppShell>;
 }
 
 export default function App() {
@@ -64,33 +49,15 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/" element={
-            <PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>
-          } />
-          <Route path="/jobs/new" element={
-            <PrivateRoute><Layout><JobForm /></Layout></PrivateRoute>
-          } />
-          <Route path="/jobs/:id/edit" element={
-            <PrivateRoute><Layout><JobForm /></Layout></PrivateRoute>
-          } />
-          <Route path="/jobs/:id/history" element={
-            <PrivateRoute><Layout><JobHistory /></Layout></PrivateRoute>
-          } />
-          <Route path="/jobs/:id/compare" element={
-            <PrivateRoute><Layout><CompareView /></Layout></PrivateRoute>
-          } />
-          <Route path="/whatsapp" element={
-            <PrivateRoute><Layout><WhatsApp /></Layout></PrivateRoute>
-          } />
-          <Route path="/email" element={
-            <PrivateRoute><Layout><EmailSettings /></Layout></PrivateRoute>
-          } />
-          <Route path="/health" element={
-            <PrivateRoute><Layout><HealthCheck /></Layout></PrivateRoute>
-          } />
-          <Route path="/profile" element={
-            <PrivateRoute><Layout><Profile /></Layout></PrivateRoute>
-          } />
+          <Route path="/" element={<PrivateRoute><Layout title="Monitoring Jobs"><Dashboard /></Layout></PrivateRoute>} />
+          <Route path="/jobs/new" element={<PrivateRoute><Layout title="New Job"><JobForm /></Layout></PrivateRoute>} />
+          <Route path="/jobs/:id/edit" element={<PrivateRoute><Layout title="Edit Job"><JobForm /></Layout></PrivateRoute>} />
+          <Route path="/jobs/:id/history" element={<PrivateRoute><Layout title="Run History"><JobHistory /></Layout></PrivateRoute>} />
+          <Route path="/jobs/:id/compare" element={<PrivateRoute><Layout title="Compare Runs"><CompareView /></Layout></PrivateRoute>} />
+          <Route path="/whatsapp" element={<PrivateRoute><Layout title="WhatsApp Connection"><WhatsApp /></Layout></PrivateRoute>} />
+          <Route path="/email" element={<PrivateRoute><Layout title="Email Settings"><EmailSettings /></Layout></PrivateRoute>} />
+          <Route path="/health" element={<PrivateRoute><Layout title="System Health"><HealthCheck /></Layout></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><Layout title="Profile"><Profile /></Layout></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

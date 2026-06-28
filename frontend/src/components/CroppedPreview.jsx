@@ -51,13 +51,13 @@ export default function CroppedPreview({ previewUrl, crop, label }) {
   if (status === 'error') return null;
 
   return (
-    <div className="cropped-preview-wrap">
-      {label && <div className="cropped-preview-label">{label}</div>}
-      <div className="cropped-preview-box">
+    <div className="mt-4">
+      {label && <div className="font-[DM_Sans] text-[11px] font-bold uppercase tracking-widest text-primary mb-2 flex items-center gap-1.5"><span className="material-symbols-outlined text-sm">crop</span> {label}</div>}
+      <div className="border-2 border-dashed border-primary/20 rounded-xl bg-surface-container-low min-h-[120px] flex items-center justify-center overflow-hidden">
         {status === 'ready' ? (
-          <canvas ref={canvasRef} className="cropped-preview-canvas" />
+          <canvas ref={canvasRef} className="max-w-full h-auto block rounded-lg" />
         ) : (
-          <div className="cropped-preview-loading">Generating cropped preview…</div>
+          <div className="text-text-dim text-sm py-6 flex items-center gap-2"><span className="material-symbols-outlined animate-spin-slow">progress_activity</span> Generating cropped preview…</div>
         )}
       </div>
     </div>
