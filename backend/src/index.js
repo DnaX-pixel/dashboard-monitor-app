@@ -4,6 +4,9 @@ const cors    = require('cors');
 const path    = require('path');
 
 const app = express();
+// Trust the nginx reverse proxy (1 hop) so req.ip and X-Forwarded-For
+// reflect the real client IP — needed for rate limiting + login history.
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 

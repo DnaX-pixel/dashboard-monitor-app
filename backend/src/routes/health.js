@@ -13,7 +13,9 @@ router.get('/', async (req, res) => {
   // 1. Database (MySQL)
   try {
     await queryGet('SELECT 1');
-    checks.database = { status: 'ok', label: 'MySQL Database' };
+    const host = process.env.DB_HOST || 'localhost';
+    const name = process.env.DB_NAME || 'dashboard_monitor';
+    checks.database = { status: 'ok', label: 'MySQL Database', detail: `${host}/${name}` };
   } catch (e) {
     checks.database = { status: 'error', label: 'MySQL Database', detail: e.message };
   }

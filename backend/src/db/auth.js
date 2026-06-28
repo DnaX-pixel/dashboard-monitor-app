@@ -15,7 +15,9 @@ function hashToken(token) {
 }
 
 function getClientIp(req) {
-  return (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim().slice(0, 45);
+  const raw = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  // Strip IPv6-mapped IPv4 prefix (e.g. ::ffff:1.2.3.4 -> 1.2.3.4)
+  return raw.replace(/^::ffff:/, '').slice(0, 45);
 }
 
 async function recordLogin(userId, email, success, req) {

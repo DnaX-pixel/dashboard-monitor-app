@@ -50,6 +50,8 @@ router.post('/', async (req, res) => {
 
   const newJob = await queryGet('SELECT * FROM jobs WHERE job_id = ?', [result.insertId]);
   scheduleJob(newJob);
+  // Include next_run in the response so the client can show countdown immediately
+  newJob.next_run = getJobNextRuns()[newJob.job_id] || null;
 
   // Lazy connect WhatsApp for this user (if they have any whatsapp recipients)
   const hasWhatsAppRecipients = await queryGet(
