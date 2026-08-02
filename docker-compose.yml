@@ -63,7 +63,7 @@ services:
       - DB_PASS=monitor_pass
       - DATA_DIR=/app/data
       - AUTH_DIR=/app/auth_info
-      - APP_BASE_URL=http://72.61.149.40
+      - APP_BASE_URL=https://72-61-149-40.sslip.io
     depends_on:
       mysql:
         condition: service_healthy
@@ -99,12 +99,16 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: monitor-frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
     depends_on:
       - backend
     networks:
       - monitor-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.monitor.rule=Host(`72-61-149-40.sslip.io`)"
+      - "traefik.http.routers.monitor.entrypoints=websecure"
+      - "traefik.http.routers.monitor.tls.certresolver=letsencrypt"
+      - "traefik.http.services.monitor.loadbalancer.server.port=80"
 
 volumes:
   mysql-data:
