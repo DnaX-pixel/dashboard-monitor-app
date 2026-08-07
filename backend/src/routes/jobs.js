@@ -55,8 +55,8 @@ router.post('/', async (req, res) => {
 
   // Lazy connect WhatsApp for this user (if they have any whatsapp recipients)
   const hasWhatsAppRecipients = await queryGet(
-    'SELECT 1 FROM recipients WHERE job_id = ? AND type = ? LIMIT 1',
-    [newJob.job_id, 'whatsapp']
+    'SELECT 1 FROM recipients WHERE job_id = ? AND type IN (?, ?) LIMIT 1',
+    [newJob.job_id, 'whatsapp', 'whatsapp_group']
   );
   if (hasWhatsAppRecipients) {
     connectWhatsApp(req.user.user_id).catch(e =>

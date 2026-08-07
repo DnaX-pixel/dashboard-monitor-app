@@ -107,12 +107,23 @@ async function initSchema() {
       CREATE TABLE IF NOT EXISTS recipients (
         recipient_id INT AUTO_INCREMENT PRIMARY KEY,
         job_id       INT          NOT NULL,
-        type         ENUM('email','whatsapp') NOT NULL,
+        type         ENUM('email','whatsapp','whatsapp_group') NOT NULL,
         value        VARCHAR(150) NOT NULL,
+        label        VARCHAR(150) NULL,
         created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (job_id) REFERENCES jobs(job_id) ON DELETE CASCADE
       )
     `);
+
+    await conn.execute(
+      `ALTER TABLE recipients MODIFY COLUMN type ENUM('email','whatsapp','whatsapp_group') NOT NULL`
+    );
+    try {
+      await conn.execute('ALTER TABLE recipients ADD COLUMN label VARCHAR(150) NULL');
+      console.log('[DB] Added recipients.label');
+    } catch (e) {
+      if (e.code !== 'ER_DUP_FIELDNAME') throw e;
+    }
 
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS history (
@@ -147,7 +158,7 @@ async function initSchema() {
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS whatsapp_sessions (
         user_id      INT PRIMARY KEY,
-        status       ENUM('disconnected','awaiting_qr','connected') NOT NULL DEFAULT 'disconnected',
+        status       ENUM('disconnected','connecting','awaiting_qr','connected') NOT NULL DEFAULT 'disconnected',
         phone_number VARCHAR(20),
         push_name    VARCHAR(100),
         connected_at DATETIME,
@@ -156,6 +167,11 @@ async function initSchema() {
         FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
       )
     `);
+
+    await conn.execute(
+      `ALTER TABLE whatsapp_sessions MODIFY COLUMN status
+         ENUM('disconnected','connecting','awaiting_qr','connected') NOT NULL DEFAULT 'disconnected'`
+    );
 
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS job_items (

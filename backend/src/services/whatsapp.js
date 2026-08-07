@@ -53,6 +53,28 @@ async function persistStatus(userId, status, extras = {}) {
   }
 }
 
+// Baileys refetches group metadata on every send to a group unless a cache is
+// supplied. Jobs can fire often and send one message per screenshot, so without
+// this each run costs several extra round-trips and risks rate limiting.
+const GROUP_CACHE_TTL_MS = 5 * 60 * 1000;
+const groupMetaCache = new Map(); // `${userId}:${jid}` -> { at, meta }
+
+async function getCachedGroupMetadata(userId, jid) {
+  const key = `${userId}:${jid}`;
+  const hit = groupMetaCache.get(key);
+  if (hit && Date.now() - hit.at < GROUP_CACHE_TTL_MS) return hit.meta;
+
+  const session = sessions.get(userId);
+  if (!session?.sock) return undefined; // let Baileys fall back to its own fetch
+  try {
+    const meta = await session.sock.groupMetadata(jid);
+    groupMetaCache.set(key, { at: Date.now(), meta });
+    return meta;
+  } catch (e) {
+    return undefined;
+  }
+}
+
 function getOrCreateSession(userId) {
   if (!sessions.has(userId)) {
     sessions.set(userId, {
@@ -73,15 +95,28 @@ async function connectWhatsApp(userId) {
   session.status = 'connecting';
   await persistStatus(userId, 'connecting');
 
-  const authDir = getAuthDir(userId);
-  const { state, saveCreds } = await useMultiFileAuthState(authDir);
-  const { version } = await fetchLatestBaileysVersion();
+  let state, saveCreds, version;
+  try {
+    const authDir = getAuthDir(userId);
+    ({ state, saveCreds } = await useMultiFileAuthState(authDir));
+    ({ version } = await fetchLatestBaileysVersion());
+  } catch (e) {
+    // Never leave the session stuck in 'connecting' — the guard above would
+    // then reject every future attempt until the process restarts.
+    session.status = 'disconnected';
+    await persistStatus(userId, 'disconnected', { last_error: `setup_failed: ${e.message}` });
+    console.error(`[WhatsApp ${userId}] Setup failed, retrying in 30s:`, e.message);
+    clearTimeout(session.reconnectTimer);
+    session.reconnectTimer = setTimeout(() => connectWhatsApp(userId).catch(() => {}), 30000);
+    return;
+  }
 
   session.sock = makeWASocket({
     version,
     auth: state,
     logger: silentLogger,
     printQRInTerminal: false,
+    cachedGroupMetadata: async (jid) => getCachedGroupMetadata(userId, jid),
   });
 
   session.sock.ev.on('connection.update', async (update) => {
@@ -143,6 +178,9 @@ async function connectWhatsApp(userId) {
 }
 
 function clearAuthSession(userId) {
+  for (const key of groupMetaCache.keys()) {
+    if (key.startsWith(`${userId}:`)) groupMetaCache.delete(key);
+  }
   try {
     const dir = getAuthDir(userId);
     for (const f of fs.readdirSync(dir)) {
@@ -203,6 +241,50 @@ async function sendWhatsApp(userId, jid, message, imagePaths) {
   }
 }
 
+// Re-establish sessions for every user with saved credentials on disk.
+// Baileys creds survive restarts, but the in-memory `sessions` Map does not —
+// without this, scheduled WhatsApp sends fail until a user opens the QR page.
+async function restoreSessions() {
+  let dirs;
+  try {
+    dirs = fs.readdirSync(AUTH_DIR, { withFileTypes: true })
+      .filter(d => d.isDirectory() && /^\d+$/.test(d.name))
+      .filter(d => fs.existsSync(path.join(AUTH_DIR, d.name, 'creds.json')));
+  } catch (e) {
+    return; // AUTH_DIR missing — nothing to restore
+  }
+  for (const d of dirs) {
+    const userId = Number(d.name);
+    try {
+      await connectWhatsApp(userId);
+      console.log(`[WhatsApp ${userId}] Session restore started`);
+    } catch (e) {
+      console.error(`[WhatsApp ${userId}] Session restore failed:`, e.message);
+    }
+  }
+}
+
+async function listGroups(userId) {
+  const session = sessions.get(userId);
+  if (!session || session.status !== 'connected' || !session.sock) {
+    throw new Error(`WhatsApp not connected for user ${userId} (status: ${session?.status || 'disconnected'})`);
+  }
+  const groups = await session.sock.groupFetchAllParticipating();
+  // Warm the send-path cache — this call already returns full metadata.
+  const now = Date.now();
+  for (const [jid, meta] of Object.entries(groups)) {
+    groupMetaCache.set(`${userId}:${jid}`, { at: now, meta });
+  }
+  return Object.values(groups)
+    .map(g => ({
+      jid: g.id,
+      subject: g.subject || g.id,
+      participants: g.participants?.length || 0,
+      announce: Boolean(g.announce),
+    }))
+    .sort((a, b) => a.subject.localeCompare(b.subject));
+}
+
 function normalizeJid(value) {
   let v = String(value || '').trim();
   if (v.includes('@')) return v;
@@ -217,4 +299,4 @@ function normalizeJid(value) {
   return v + '@s.whatsapp.net';
 }
 
-module.exports = { connectWhatsApp, disconnectWhatsApp, sendWhatsApp, getWhatsAppState };
+module.exports = { connectWhatsApp, disconnectWhatsApp, sendWhatsApp, getWhatsAppState, listGroups, restoreSessions };

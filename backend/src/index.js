@@ -42,8 +42,10 @@ async function start() {
     const { initScheduler } = require('./scheduler');
     initScheduler().catch(err => console.error('[Scheduler] Init failed:', err.message));
 
-    // WhatsApp connections are now per-user (lazy connect on first use)
-    console.log('[WhatsApp] Multi-tenant mode — connections initialize on demand');
+    // WhatsApp is per-user: restore saved sessions, then lazy connect for the rest
+    console.log('[WhatsApp] Multi-tenant mode — restoring saved sessions');
+    const { restoreSessions } = require('./services/whatsapp');
+    restoreSessions().catch(err => console.error('[WhatsApp] Session restore failed:', err.message));
   });
 }
 

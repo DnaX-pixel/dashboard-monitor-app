@@ -22,14 +22,17 @@ router.post('/:jobId/recipients', async (req, res) => {
   if (!await ownsJob(req.params.jobId, req.user.user_id)) {
     return res.status(404).json({ error: 'Job not found' });
   }
-  const { type, value } = req.body;
+  const { type, value, label } = req.body;
   if (!type || !value) return res.status(400).json({ error: 'type and value are required' });
-  if (!['email', 'whatsapp'].includes(type)) {
-    return res.status(400).json({ error: 'type must be email or whatsapp' });
+  if (!['email', 'whatsapp', 'whatsapp_group'].includes(type)) {
+    return res.status(400).json({ error: 'type must be email, whatsapp or whatsapp_group' });
+  }
+  if (type === 'whatsapp_group' && !/^[\w-]+@g\.us$/.test(String(value).trim())) {
+    return res.status(400).json({ error: 'whatsapp_group value must be a group JID ending in @g.us' });
   }
   const result = await queryRun(
-    'INSERT INTO recipients (job_id, type, value) VALUES (?, ?, ?)',
-    [req.params.jobId, type, value]
+    'INSERT INTO recipients (job_id, type, value, label) VALUES (?, ?, ?, ?)',
+    [req.params.jobId, type, value, label || null]
   );
   res.status(201).json(
     await queryGet('SELECT * FROM recipients WHERE recipient_id = ?', [result.insertId])

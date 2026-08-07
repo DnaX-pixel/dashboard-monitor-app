@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const requireAuth = require('../middleware/auth');
-const { connectWhatsApp, disconnectWhatsApp, getWhatsAppState } = require('../services/whatsapp');
+const { connectWhatsApp, disconnectWhatsApp, getWhatsAppState, listGroups } = require('../services/whatsapp');
 
 router.use(requireAuth);
 
@@ -23,6 +23,15 @@ router.get('/qr', async (req, res) => {
     res.json({ status, qr });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// List WhatsApp groups the connected account is a participant of
+router.get('/groups', async (req, res) => {
+  try {
+    res.json({ groups: await listGroups(req.user.user_id) });
+  } catch (err) {
+    res.status(409).json({ error: err.message });
   }
 });
 

@@ -43,7 +43,7 @@ Multi-user: setiap user ada job monitoring sendiri (1–5 job/user dijangka).
 | M3 — Capture & OCR | Screenshot engine + extract teks |
 | M4 — Scheduler | Cron trigger & change detection |
 | M5 — Email Service | Hantar emel via SMTP (Nodemailer) |
-| M6 — WhatsApp Service | Hantar mesej via Baileys |
+| M6 — WhatsApp Service | Hantar mesej via Baileys (nombor peribadi & group) |
 | M7 — History & Log | Rekod setiap run & status penghantaran |
 | M8 — Dashboard UI | Frontend: senarai job, crop tool, history view |
 
@@ -86,8 +86,9 @@ USER 1───M JOB 1───M RECIPIENT
 |---|---|---|
 | recipient_id | INTEGER (PK) | |
 | job_id | INTEGER (FK) | |
-| type | ENUM | email / whatsapp |
-| value | VARCHAR(150) | Alamat emel atau nombor (format Baileys: `60123456789@s.whatsapp.net`) |
+| type | ENUM | email / whatsapp / whatsapp_group |
+| value | VARCHAR(150) | Alamat emel, JID peribadi (`60123456789@s.whatsapp.net`), atau JID group (`120363...@g.us`) |
+| label | VARCHAR(150) | Nama paparan (nama group) — supaya UI tak tunjuk JID mentah |
 | created_at | DATETIME | |
 
 ### HISTORY

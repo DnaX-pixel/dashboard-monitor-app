@@ -125,7 +125,7 @@ All `/api/*` routes require `Authorization: Bearer <jwt>` except auth routes.
 | Method | Path | Body | Description |
 |--------|------|------|-------------|
 | GET | `/api/jobs/:jobId/recipients` | — | List recipients |
-| POST | `/api/jobs/:jobId/recipients` | `{type, value}` | Add recipient |
+| POST | `/api/jobs/:jobId/recipients` | `{type, value, label?}` | Add recipient (`whatsapp_group` value must be a `@g.us` JID) |
 | DELETE | `/api/jobs/:jobId/recipients/:id` | — | Remove recipient |
 
 ### Runs & History
@@ -181,8 +181,9 @@ USER 1───M JOB 1───M RECIPIENT
 - **jobs.crop_x/y/width/height** — stored as % (0–100), NOT pixels. Converted to pixels at capture time using 1280×720 viewport.
 - **jobs.status** — `active` | `paused`
 - **jobs.notify_only_on_change** — 1 = only notify when OCR text differs from previous run
-- **recipients.type** — `email` | `whatsapp`
-- **recipients.value** — email address OR WhatsApp JID (`60123456789@s.whatsapp.net`)
+- **recipients.type** — `email` | `whatsapp` | `whatsapp_group`
+- **recipients.value** — email address, personal WhatsApp JID (`60123456789@s.whatsapp.net`), or group JID (`120363...@g.us`)
+- **recipients.label** — display name for the recipient (group subject), so the UI never shows a raw JID
 - **history.delivery_status** — `sent` | `failed` | `pending`
 
 ---

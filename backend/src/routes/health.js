@@ -20,12 +20,26 @@ router.get('/', async (req, res) => {
     checks.database = { status: 'error', label: 'MySQL Database', detail: e.message };
   }
 
-  // 2. WhatsApp
-  const wa = getWhatsAppState();
+  // 2. WhatsApp (per-user)
+  const wa = getWhatsAppState(req.user.user_id);
+  let waDetail = wa.status;
+  if (wa.status === 'connected') {
+    try {
+      const s = await queryGet(
+        'SELECT phone_number, push_name FROM whatsapp_sessions WHERE user_id = ?',
+        [req.user.user_id]
+      );
+      if (s?.phone_number) waDetail = `Connected as ${s.push_name || s.phone_number}`;
+    } catch (e) { /* keep plain status */ }
+  } else if (wa.status === 'awaiting_qr') {
+    waDetail = 'Awaiting QR scan — go to WhatsApp Connection';
+  } else if (wa.status === 'disconnected') {
+    waDetail = 'Not connected — go to WhatsApp Connection';
+  }
   checks.whatsapp = {
-    status: wa.status === 'connected' ? 'ok' : wa.status === 'awaiting_qr' ? 'warning' : 'error',
+    status: wa.status === 'connected' ? 'ok' : wa.status === 'disconnected' ? 'error' : 'warning',
     label: 'WhatsApp (Baileys)',
-    detail: wa.status,
+    detail: waDetail,
   };
 
   // 3. SMTP / Email (per-user)

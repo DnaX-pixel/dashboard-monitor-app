@@ -100,9 +100,9 @@ async function runJob(jobId) {
         try {
           const emailSubject = (job.notification_subject || '').trim() || job.job_name;
           if (r.type === 'email')    await sendEmail(job.user_id, r.value, `${emailSubject} - ${runAt.slice(0,10)}`, body, allPaths);
-          if (r.type === 'whatsapp') await sendWhatsApp(job.user_id, r.value, body, allPaths);
+          if (r.type === 'whatsapp' || r.type === 'whatsapp_group') await sendWhatsApp(job.user_id, r.value, body, allPaths);
         } catch (e) {
-          errors.push(`[${r.type} → ${r.value}]: ${e.message}`);
+          errors.push(`[${r.type} → ${r.label || r.value}]: ${e.message}`);
         }
       }
 

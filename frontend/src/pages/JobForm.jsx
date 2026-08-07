@@ -20,6 +20,8 @@ export default function JobForm() {
   const [form, setForm] = useState(DEFAULT);
   const [recipients, setRecipients] = useState([]);
   const [newRecip, setNewRecip] = useState({ type: 'email', value: '' });
+  const [groups, setGroups] = useState([]);
+  const [groupsState, setGroupsState] = useState({ loading: false, error: '' });
   const [previewUrl, setPreviewUrl] = useState(null);
   const [previewing, setPreviewing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -48,6 +50,14 @@ export default function JobForm() {
     }).catch(err => setError(err.message));
   }, [id, isEdit]);
 
+  useEffect(() => {
+    if (newRecip.type !== 'whatsapp_group' || groups.length > 0) return;
+    setGroupsState({ loading: true, error: '' });
+    api.get('/api/whatsapp/groups')
+      .then(({ groups }) => { setGroups(groups); setGroupsState({ loading: false, error: '' }); })
+      .catch(err => setGroupsState({ loading: false, error: err.message }));
+  }, [newRecip.type, groups.length]);
+
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   async function loadPreview() {
@@ -62,12 +72,21 @@ export default function JobForm() {
 
   async function addRecipient() {
     const value = newRecip.value.trim();
-    if (!value) return;
+    if (!value) {
+      setError(newRecip.type === 'whatsapp_group'
+        ? 'Pick a WhatsApp group first.'
+        : 'Enter a recipient value first.');
+      return;
+    }
+    setError('');
+    const label = newRecip.type === 'whatsapp_group'
+      ? groups.find(g => g.jid === value)?.subject || null
+      : null;
     if (isEdit) {
-      try { const r = await api.post(`/api/jobs/${id}/recipients`, { type: newRecip.type, value }); setRecipients(rs => [...rs, r]); }
+      try { const r = await api.post(`/api/jobs/${id}/recipients`, { type: newRecip.type, value, label }); setRecipients(rs => [...rs, r]); }
       catch (err) { setError(err.message); return; }
     } else {
-      setRecipients(rs => [...rs, { type: newRecip.type, value, _key: Date.now() }]);
+      setRecipients(rs => [...rs, { type: newRecip.type, value, label, _key: Date.now() }]);
     }
     setNewRecip(r => ({ ...r, value: '' }));
   }
@@ -123,7 +142,7 @@ export default function JobForm() {
         await api.put(`/api/jobs/${id}`, form);
       } else {
         const job = await api.post('/api/jobs', form);
-        for (const r of recipients) await api.post(`/api/jobs/${job.job_id}/recipients`, { type: r.type, value: r.value });
+        for (const r of recipients) await api.post(`/api/jobs/${job.job_id}/recipients`, { type: r.type, value: r.value, label: r.label ?? null });
         for (const it of items) await api.post(`/api/jobs/${job.job_id}/items`, { label: it.label, target_url: it.target_url, crop_x: it.crop_x ?? 0, crop_y: it.crop_y ?? 0, crop_width: it.crop_width ?? 100, crop_height: it.crop_height ?? 100, sort_order: it.sort_order ?? 0 });
       }
       navigate('/');
@@ -209,21 +228,37 @@ export default function JobForm() {
               <ul className="space-y-2 mb-3">
                 {recipients.map((r, i) => (
                   <li key={r.recipient_id ?? r._key ?? i} className="flex items-center gap-2 p-2.5 bg-surface-container-low border border-border-subtle rounded-lg">
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${r.type === 'email' ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success'}`}>{r.type}</span>
-                    <span className="text-sm text-text-muted truncate flex-1">{r.value}</span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${r.type === 'email' ? 'bg-primary/10 text-primary' : 'bg-success/10 text-success'}`}>{r.type === 'whatsapp_group' ? 'wa group' : r.type}</span>
+                    <span className="text-sm text-text-muted truncate flex-1">{r.label || r.value}</span>
                     <button onClick={() => removeRecipient(r)} className="text-error hover:text-red-400 text-sm">×</button>
                   </li>
                 ))}
               </ul>
             )}
             <div className="flex gap-2">
-              <select value={newRecip.type} onChange={e => setNewRecip(r => ({ ...r, type: e.target.value }))} className="w-32 bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary focus:border-primary focus:outline-none">
+              <select value={newRecip.type} onChange={e => setNewRecip({ type: e.target.value, value: '' })} className="w-32 shrink-0 bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary focus:border-primary focus:outline-none">
                 <option value="email">Email</option>
                 <option value="whatsapp">WhatsApp</option>
+                <option value="whatsapp_group">WA Group</option>
               </select>
-              <input value={newRecip.value} onChange={e => setNewRecip(r => ({ ...r, value: e.target.value }))} placeholder={newRecip.type === 'email' ? 'user@example.com' : '60123456789@s.whatsapp.net'} className="flex-1 bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none" />
-              <button onClick={addRecipient} className="px-4 py-2 bg-surface-container-high border border-border-subtle rounded-lg text-sm text-text-primary hover:bg-surface-interactive transition-colors">Add</button>
+              {newRecip.type === 'whatsapp_group' ? (
+                <select value={newRecip.value} onChange={e => setNewRecip(r => ({ ...r, value: e.target.value }))} disabled={groupsState.loading || Boolean(groupsState.error)} className="flex-1 min-w-0 truncate bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary focus:border-primary focus:outline-none disabled:opacity-40">
+                  <option value="">{groupsState.loading ? 'Loading groups…' : 'Select a group…'}</option>
+                  {groups.map(g => (
+                    <option key={g.jid} value={g.jid}>{g.subject} ({g.participants}){g.announce ? ' — admins only' : ''}</option>
+                  ))}
+                </select>
+              ) : (
+                <input value={newRecip.value} onChange={e => setNewRecip(r => ({ ...r, value: e.target.value }))} placeholder={newRecip.type === 'email' ? 'user@example.com' : '60123456789@s.whatsapp.net'} className="flex-1 min-w-0 bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none" />
+              )}
+              <button onClick={addRecipient} className="px-4 py-2 shrink-0 bg-surface-container-high border border-border-subtle rounded-lg text-sm text-text-primary hover:bg-surface-interactive transition-colors">Add</button>
             </div>
+            {newRecip.type === 'whatsapp_group' && groupsState.error && (
+              <p className="text-xs text-error mt-2">Can't load groups — connect WhatsApp in Settings first. ({groupsState.error})</p>
+            )}
+            {newRecip.type === 'whatsapp_group' && !groupsState.loading && !groupsState.error && groups.length === 0 && (
+              <p className="text-xs text-text-dim mt-2">No groups found. The connected WhatsApp account must be a member of the group.</p>
+            )}
           </div>
         </div>
 
