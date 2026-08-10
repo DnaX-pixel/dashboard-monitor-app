@@ -125,6 +125,32 @@ async function initSchema() {
       if (e.code !== 'ER_DUP_FIELDNAME') throw e;
     }
 
+    // Reusable named lists of email recipients, owned per user.
+    // Applying a preset to a job COPIES its members into `recipients` —
+    // editing a preset later never rewrites jobs that already used it.
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS email_presets (
+        preset_id  INT AUTO_INCREMENT PRIMARY KEY,
+        user_id    INT          NOT NULL,
+        name       VARCHAR(100) NOT NULL,
+        created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uniq_user_preset_name (user_id, name),
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+      )
+    `);
+
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS email_preset_members (
+        member_id  INT AUTO_INCREMENT PRIMARY KEY,
+        preset_id  INT          NOT NULL,
+        email      VARCHAR(150) NOT NULL,
+        label      VARCHAR(150) NULL,
+        created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uniq_preset_email (preset_id, email),
+        FOREIGN KEY (preset_id) REFERENCES email_presets(preset_id) ON DELETE CASCADE
+      )
+    `);
+
     await conn.execute(`
       CREATE TABLE IF NOT EXISTS history (
         history_id      INT AUTO_INCREMENT PRIMARY KEY,

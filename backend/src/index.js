@@ -20,12 +20,24 @@ app.use('/api/jobs',          require('./routes/runs'));
 app.use('/api/jobs',          require('./routes/jobItems'));
 app.use('/api/whatsapp',      require('./routes/whatsapp'));
 app.use('/api/email',         require('./routes/emailSettings'));
+app.use('/api/email-presets', require('./routes/emailPresets'));
 app.use('/api/preview',       require('./routes/preview'));
 app.use('/api/health',        require('./routes/health'));
 
 app.use((err, req, res, _next) => {
   console.error(err);
   res.status(500).json({ error: 'Internal server error' });
+});
+
+// Safety net: routes that don't wrap their async handlers can still leak a
+// rejected promise, which Node 22 escalates to an uncaughtException and exits
+// on — taking the cron scheduler and the Baileys session down with it. Log and
+// stay alive instead; the offending request still hangs, so the log matters.
+process.on('unhandledRejection', reason => {
+  console.error('[Fatal-guard] Unhandled promise rejection:', reason);
+});
+process.on('uncaughtException', err => {
+  console.error('[Fatal-guard] Uncaught exception:', err);
 });
 
 const PORT = process.env.PORT || 3001;

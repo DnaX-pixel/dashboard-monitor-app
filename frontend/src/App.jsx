@@ -8,6 +8,7 @@ import JobHistory from './pages/JobHistory';
 import CompareView from './pages/CompareView';
 import WhatsApp from './pages/WhatsApp';
 import EmailSettings from './pages/EmailSettings';
+import EmailPresets from './pages/EmailPresets';
 import HealthCheck from './pages/HealthCheck';
 import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
@@ -24,6 +25,7 @@ const PAGE_TITLES = {
   '/jobs/new': 'New Job',
   '/whatsapp': 'WhatsApp Connection',
   '/email': 'Email Settings',
+  '/email-presets': 'Email Presets',
   '/health': 'System Health',
   '/profile': 'Profile',
 };
@@ -56,6 +58,7 @@ export default function App() {
           <Route path="/jobs/:id/compare" element={<PrivateRoute><Layout title="Compare Runs"><CompareView /></Layout></PrivateRoute>} />
           <Route path="/whatsapp" element={<PrivateRoute><Layout title="WhatsApp Connection"><WhatsApp /></Layout></PrivateRoute>} />
           <Route path="/email" element={<PrivateRoute><Layout title="Email Settings"><EmailSettings /></Layout></PrivateRoute>} />
+          <Route path="/email-presets" element={<PrivateRoute><Layout title="Email Presets"><EmailPresets /></Layout></PrivateRoute>} />
           <Route path="/health" element={<PrivateRoute><Layout title="System Health"><HealthCheck /></Layout></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Layout title="Profile"><Profile /></Layout></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />

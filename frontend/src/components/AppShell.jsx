@@ -70,6 +70,7 @@ export default function AppShell({ children, title }) {
             <span className="ml-auto w-2 h-2 rounded-full" style={{ background: WA_COLORS[waStatus] || '#7b8095' }} />
           </NavLink>
           <NavLink to="/email" active={isActive('/email')} onClick={() => setSidebarOpen(false)} icon="mail" label="Email" />
+          <NavLink to="/email-presets" active={isActive('/email-presets')} onClick={() => setSidebarOpen(false)} icon="contacts" label="Presets" />
           <NavLink to="/health" active={isActive('/health')} onClick={() => setSidebarOpen(false)} icon="analytics" label="System Health" />
         </nav>
 

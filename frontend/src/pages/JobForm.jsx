@@ -22,6 +22,9 @@ export default function JobForm() {
   const [newRecip, setNewRecip] = useState({ type: 'email', value: '' });
   const [groups, setGroups] = useState([]);
   const [groupsState, setGroupsState] = useState({ loading: false, error: '' });
+  const [presets, setPresets] = useState([]);
+  const [presetId, setPresetId] = useState('');
+  const [presetNote, setPresetNote] = useState('');
   const [previewUrl, setPreviewUrl] = useState(null);
   const [previewing, setPreviewing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -49,6 +52,10 @@ export default function JobForm() {
       if (jobItems.length > 0) { setMultiMode(true); setItems(jobItems); }
     }).catch(err => setError(err.message));
   }, [id, isEdit]);
+
+  useEffect(() => {
+    api.get('/api/email-presets').then(setPresets).catch(() => setPresets([]));
+  }, []);
 
   useEffect(() => {
     if (newRecip.type !== 'whatsapp_group' || groups.length > 0) return;
@@ -89,6 +96,49 @@ export default function JobForm() {
       setRecipients(rs => [...rs, { type: newRecip.type, value, label, _key: Date.now() }]);
     }
     setNewRecip(r => ({ ...r, value: '' }));
+  }
+
+  // Copies a preset's addresses into this job's recipient list. It's a one-off
+  // copy — editing the preset later never touches jobs already created from it.
+  async function applyPreset() {
+    const preset = presets.find(p => String(p.preset_id) === presetId);
+    if (!preset) { setError('Pick a preset first.'); return; }
+    setError('');
+
+    if (preset.members.length === 0) {
+      setPresetNote(`"${preset.name}" has no email addresses in it yet.`);
+      return;
+    }
+
+    const existing = new Set(
+      recipients.filter(r => r.type === 'email').map(r => r.value.toLowerCase())
+    );
+    const fresh = preset.members.filter(m => !existing.has(m.email.toLowerCase()));
+
+    if (fresh.length === 0) {
+      setPresetNote(`All ${preset.members.length} address(es) from "${preset.name}" are already added.`);
+      return;
+    }
+
+    const added = [];
+    for (const m of fresh) {
+      const payload = { type: 'email', value: m.email, label: m.label || null };
+      if (isEdit) {
+        try { added.push(await api.post(`/api/jobs/${id}/recipients`, payload)); }
+        catch (err) { setError(err.message); break; }
+      } else {
+        added.push({ ...payload, _key: `${Date.now()}-${m.email}` });
+      }
+    }
+    if (added.length === 0) return;
+
+    setRecipients(rs => [...rs, ...added]);
+    const skipped = preset.members.length - added.length;
+    setPresetNote(
+      `Added ${added.length} recipient(s) from "${preset.name}"` +
+      (skipped > 0 ? ` — ${skipped} already in the list.` : '.')
+    );
+    setPresetId('');
   }
 
   async function removeRecipient(r) {
@@ -224,6 +274,30 @@ export default function JobForm() {
           {/* Recipients */}
           <div className="bg-surface border border-border-subtle rounded-xl p-6">
             <h3 className="font-[Plus_Jakarta_Sans] text-base font-bold text-text-primary mb-4 flex items-center gap-2"><span className="material-symbols-outlined text-primary">group</span> Notification Recipients</h3>
+
+            {/* Email preset — bulk-add a saved list instead of typing each address */}
+            <div className="mb-4 pb-4 border-b border-border-subtle">
+              <label className="font-[DM_Sans] text-[11px] font-bold uppercase tracking-widest text-text-dim block mb-1.5">Apply Email Preset</label>
+              {presets.length === 0 ? (
+                <p className="text-xs text-text-dim">
+                  No presets saved yet. Create one in <Link to="/email-presets" className="text-primary hover:underline">Email Presets</Link> to add a whole list at once.
+                </p>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <select value={presetId} onChange={e => { setPresetId(e.target.value); setPresetNote(''); }} className="flex-1 min-w-0 truncate bg-surface-container-low border border-border-subtle rounded-lg py-2 px-3 text-sm text-text-primary focus:border-primary focus:outline-none">
+                      <option value="">Select a preset…</option>
+                      {presets.map(p => (
+                        <option key={p.preset_id} value={p.preset_id}>{p.name} ({p.members.length})</option>
+                      ))}
+                    </select>
+                    <button onClick={applyPreset} disabled={!presetId} className="px-4 py-2 shrink-0 bg-surface-container-high border border-border-subtle rounded-lg text-sm text-text-primary hover:bg-surface-interactive disabled:opacity-40 transition-colors">Apply</button>
+                  </div>
+                  {presetNote && <p className="text-xs text-success mt-2">{presetNote}</p>}
+                </>
+              )}
+            </div>
+
             {recipients.length > 0 && (
               <ul className="space-y-2 mb-3">
                 {recipients.map((r, i) => (
