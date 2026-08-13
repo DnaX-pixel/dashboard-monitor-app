@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const { CronExpressionParser } = require('cron-parser');
 const { queryAll } = require('../db/database');
-const { runJob }   = require('../services/runner');
+const { runJob, isRunning } = require('../services/runner');
 
 // jobId (number) → { task, cron }
 const tasks = new Map();
@@ -20,6 +20,12 @@ function scheduleJob(job) {
   }
 
   const task = cron.schedule(job.schedule_cron, async () => {
+    // A run can outlast its own interval on a slow box — skip this tick rather
+    // than piling a second capture + OCR on top of the one still going.
+    if (isRunning(job.job_id)) {
+      console.log(`[Scheduler] Job ${job.job_id} still running — skipping this tick`);
+      return;
+    }
     console.log(`[Scheduler] Firing job ${job.job_id} (${job.job_name})`);
     try {
       const h = await runJob(job.job_id);

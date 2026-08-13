@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 
+const RUN_POLL_MS    = 3000;
+const RUN_TIMEOUT_MS = 10 * 60 * 1000;
+
 function timeUntil(dateStr) {
   if (!dateStr) return '—';
   const diff = new Date(dateStr).getTime() - Date.now();
@@ -26,10 +29,29 @@ export default function Dashboard() {
 
   useEffect(() => { loadJobs(); }, [loadJobs]);
 
+  // The backend answers /run immediately and does the capture + OCR in the
+  // background, so wait for the outcome by polling instead of on one long request.
+  async function waitForRun(jobId) {
+    const deadline = Date.now() + RUN_TIMEOUT_MS;
+    while (Date.now() < deadline) {
+      await new Promise(r => setTimeout(r, RUN_POLL_MS));
+      const { running, last_run } = await api.get(`/api/jobs/${jobId}/run-status`);
+      if (!running) return last_run;
+    }
+    throw new Error('still running after 10 minutes — check the history page for the result');
+  }
+
   async function runNow(jobId) {
     setRunning(r => ({ ...r, [jobId]: true }));
-    try { await api.post(`/api/jobs/${jobId}/run`); await loadJobs(); }
-    catch (err) { alert('Run failed: ' + err.message); }
+    try {
+      await api.post(`/api/jobs/${jobId}/run`);
+      const lastRun = await waitForRun(jobId);
+      await loadJobs();
+      if (lastRun?.delivery_status === 'failed') {
+        alert('Run finished with errors: ' + (lastRun.error_message || 'delivery failed'));
+      }
+    }
+    catch (err) { await loadJobs(); alert('Run failed: ' + err.message); }
     finally { setRunning(r => ({ ...r, [jobId]: false })); }
   }
 

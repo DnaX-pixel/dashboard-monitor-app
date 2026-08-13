@@ -25,7 +25,27 @@ function buildMessage(job, ocrText, runAt) {
   ].join('\n');
 }
 
-async function runJob(jobId) {
+// Jobs currently executing. Capture + OCR takes minutes on a small box, so a
+// short cron interval (or a double-clicked "Run now") would otherwise stack
+// several chromium instances and OCR requests on top of each other.
+const inFlight = new Map(); // jobId → Promise<history|null>
+
+function isRunning(jobId) {
+  return inFlight.has(Number(jobId));
+}
+
+// Coalesces concurrent calls for the same job onto the run already in progress.
+function runJob(jobId) {
+  const id = Number(jobId);
+  const existing = inFlight.get(id);
+  if (existing) return existing;
+
+  const run = executeJob(id).finally(() => inFlight.delete(id));
+  inFlight.set(id, run);
+  return run;
+}
+
+async function executeJob(jobId) {
   const job = await queryGet(
     "SELECT * FROM jobs WHERE job_id = ? AND status = 'active'",
     [jobId]
@@ -120,4 +140,4 @@ async function runJob(jobId) {
   return await queryGet('SELECT * FROM history WHERE history_id = ?', [result.insertId]);
 }
 
-module.exports = { runJob };
+module.exports = { runJob, isRunning };
